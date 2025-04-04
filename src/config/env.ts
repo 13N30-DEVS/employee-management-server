@@ -9,6 +9,7 @@ const {
   DB_PORT,
   DB_DIALECT,
   NODE_ENV,
+  FRONT_END_URL,
 }: any = process.env;
 
 export default {
@@ -19,4 +20,5 @@ export default {
   DB_PORT,
   DB_DIALECT,
   NODE_ENV,
+  FRONT_END_URL,
 };

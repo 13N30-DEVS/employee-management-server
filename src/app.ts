@@ -3,6 +3,7 @@ import { FastifyPluginAsync } from "fastify";
 import { cpus } from "os";
 import { join } from "path";
 import v1 from "./api/v1";
+import { commonHeaders, commonQuerys } from "./helpers";
 
 process.env.UV_THREADPOOL_SIZE = String(cpus().length);
 
@@ -22,6 +23,10 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // This loads all plugins defined in plugins
   // those should be support plugins that are reused
   // through your application
+
+  void fastify.addSchema(commonHeaders);
+  void fastify.addSchema(commonQuerys);
+
   fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),
     options: opts,

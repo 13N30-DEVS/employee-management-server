@@ -34,10 +34,7 @@ export const sequelize = new Sequelize(
     port: dbConfig.port,
     timezone: "+00:00",
     dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      },
+      ssl: false,
     },
   }
 );

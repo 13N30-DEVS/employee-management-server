@@ -95,7 +95,7 @@ CREATE TABLE "workspace_designations" (
 
 CREATE TABLE "employee_informations" (
   "id" uuid PRIMARY KEY NOT NULL,
-  "user_id" uuid,
+  "user_id" uuid NOT NULL,
   "workspace_id" uuid,
   "gender" int,
   "email" varchar UNIQUE,

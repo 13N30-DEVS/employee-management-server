@@ -1,11 +1,198 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["auth", "public"]
+}
+
+model master_user_roles {
+  id                     Int                      @id
+  name                   String?                  @db.VarChar
+  description            String?                  @db.VarChar
+  is_active              Boolean?                 @default(true)
+  created_at             DateTime?                @db.Timestamp(6)
+  updated_at             DateTime?                @db.Timestamp(6)
+  users                  users[]
+  employee_role_mappings employee_role_mappings[]
+
+  @@schema("auth")
+}
+
+model master_user_statuses {
+  id          Int       @id
+  name        String?   @db.VarChar
+  description String?   @db.VarChar
+  is_active   Boolean?  @default(true)
+  created_at  DateTime? @db.Timestamp(6)
+  updated_at  DateTime? @db.Timestamp(6)
+  users       users[]
+
+  @@schema("auth")
+}
+
+model users {
+  id                    String                  @id @db.Uuid
+  email_id              String?                 @db.VarChar(255)
+  password_hash         String?                 @db.VarChar(255)
+  role                  Int?
+  status                Int?
+  is_active             Boolean?                @default(true)
+  created_by            String?                 @db.Uuid
+  created_at            DateTime?               @db.Timestamp(6)
+  updated_by            String?                 @db.Uuid
+  updated_at            DateTime?               @db.Timestamp(6)
+  master_user_roles     master_user_roles?      @relation(fields: [role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_user_statuses  master_user_statuses?   @relation(fields: [status], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_informations employee_informations[]
+
+  @@schema("auth")
+}
+
+model employee_details {
+  id                    String                 @id @db.Uuid
+  emp_id                String?                @db.Uuid
+  date_of_birth         DateTime?              @db.Date
+  addresses             String?
+  is_active             Boolean?               @default(true)
+  is_deleted            Boolean?               @default(false)
+  created_by            String?                @db.Uuid
+  created_at            DateTime?              @db.Timestamp(6)
+  updated_by            String?                @db.Uuid
+  updated_at            DateTime?              @db.Timestamp(6)
+  deleted_by            String?                @db.Uuid
+  deleted_at            DateTime?              @db.Timestamp(6)
+  employee_informations employee_informations? @relation(fields: [emp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model employee_informations {
+  id                     String                   @id @db.Uuid
+  user_id                String                   @db.Uuid
+  workspace_id           String?                  @db.Uuid
+  gender                 Int?
+  email                  String?                  @unique @db.VarChar
+  mobile_number          String?                  @unique @db.VarChar
+  profile_pic            String?                  @db.VarChar
+  is_active              Boolean?                 @default(true)
+  is_deleted             Boolean?                 @default(false)
+  created_by             String?                  @db.Uuid
+  created_at             DateTime?                @db.Timestamp(6)
+  updated_by             String?                  @db.Uuid
+  updated_at             DateTime?                @db.Timestamp(6)
+  deleted_by             String?                  @db.Uuid
+  deleted_at             DateTime?                @db.Timestamp(6)
+  employee_details       employee_details[]
+  master_genders         master_genders?          @relation(fields: [gender], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                  users                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces             workspaces?              @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_role_mappings employee_role_mappings[]
+
+  @@schema("public")
+}
+
+model employee_role_mappings {
+  id                    String                 @id @db.Uuid
+  emp_id                String?                @db.Uuid
+  role_id               Int?
+  is_active             Boolean?               @default(true)
+  is_deleted            Boolean?               @default(false)
+  created_by            String?                @db.Uuid
+  created_at            DateTime?              @db.Timestamp(6)
+  updated_by            String?                @db.Uuid
+  updated_at            DateTime?              @db.Timestamp(6)
+  deleted_by            String?                @db.Uuid
+  deleted_at            DateTime?              @db.Timestamp(6)
+  employee_informations employee_informations? @relation(fields: [emp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_user_roles     master_user_roles?     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model master_departments {
+  id                    Int                     @id
+  name                  String?                 @db.VarChar
+  description           String?                 @db.VarChar
+  is_active             Boolean?                @default(true)
+  created_at            DateTime?               @db.Timestamp(6)
+  updated_at            DateTime?               @db.Timestamp(6)
+  workspace_departments workspace_departments[]
+
+  @@schema("public")
+}
+
+model master_designations {
+  id                     Int                      @id
+  name                   String?                  @db.VarChar
+  description            String?                  @db.VarChar
+  is_active              Boolean?                 @default(true)
+  created_at             DateTime?                @db.Timestamp(6)
+  updated_at             DateTime?                @db.Timestamp(6)
+  workspace_designations workspace_designations[]
+
+  @@schema("public")
+}
+
+model master_genders {
+  id                    Int                     @id
+  name                  String?                 @db.VarChar
+  description           String?                 @db.VarChar
+  is_active             Boolean?                @default(true)
+  created_at            DateTime?               @db.Timestamp(6)
+  updated_at            DateTime?               @db.Timestamp(6)
+  employee_informations employee_informations[]
+
+  @@schema("public")
+}
+
+model workspace_departments {
+  id                 String              @id @db.Uuid
+  workspace_id       String?             @db.Uuid
+  dep_id             Int?
+  is_active          Boolean?            @default(true)
+  created_by         String?             @db.Uuid
+  created_at         DateTime?           @db.Timestamp(6)
+  updated_by         String?             @db.Uuid
+  updated_at         DateTime?           @db.Timestamp(6)
+  master_departments master_departments? @relation(fields: [dep_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces         workspaces?         @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model workspace_designations {
+  id                  String               @id @db.Uuid
+  workspace_id        String?              @db.Uuid
+  dep_id              Int?
+  is_active           Boolean?             @default(true)
+  created_by          String?              @db.Uuid
+  created_at          DateTime?            @db.Timestamp(6)
+  updated_by          String?              @db.Uuid
+  updated_at          DateTime?            @db.Timestamp(6)
+  master_designations master_designations? @relation(fields: [dep_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces          workspaces?          @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model workspaces {
+  id                     String                   @id @db.Uuid
+  workspace_name         String?                  @db.VarChar
+  is_active              Boolean?                 @default(true)
+  is_deleted             Boolean?                 @default(false)
+  created_by             String?                  @db.Uuid
+  created_at             DateTime?                @db.Timestamp(6)
+  updated_by             String?                  @db.Uuid
+  updated_at             DateTime?                @db.Timestamp(6)
+  deleted_by             String?                  @db.Uuid
+  deleted_at             DateTime?                @db.Timestamp(6)
+  employee_informations  employee_informations[]
+  workspace_departments  workspace_departments[]
+  workspace_designations workspace_designations[]
+
+  @@schema("public")
 }

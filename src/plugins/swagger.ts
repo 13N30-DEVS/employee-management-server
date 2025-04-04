@@ -10,7 +10,7 @@ const swaggerPlugin: FastifyPluginCallback<SwaggerOptions> = async (
   fastify.register(swagger, {
     swagger: {
       info: {
-        title: "",
+        title: "Workforce Management System",
         description: "API documentation",
         version: "1.0.0",
       },
@@ -18,9 +18,9 @@ const swaggerPlugin: FastifyPluginCallback<SwaggerOptions> = async (
     exposeRoute: true,
   });
   fastify.register(fastifySwaggerUi, {
-    routePrefix: "/",
+    routePrefix: "/docs",
     uiConfig: {
-      docExpansion: "full",
+      docExpansion: "list",
       deepLinking: false,
     },
     uiHooks: {
