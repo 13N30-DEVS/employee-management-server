@@ -19,7 +19,7 @@ function queryRequestInfo(request: ExtendFastifyRequest) {
     // For Get Request
 
     const {
-      query: { offset, limit, search = "", ...rest },
+      query: { offset = 0, limit = 5, search = "", ...rest },
       url,
     } = request as {
       query: {
