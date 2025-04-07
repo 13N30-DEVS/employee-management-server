@@ -1,7 +1,15 @@
 import { Dialect, Sequelize } from "sequelize";
 
-const { DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_DIALECT }: any =
-  process.env;
+const {
+  DB_NAME,
+  DB_USERNAME,
+  DB_PASSWORD,
+  DB_HOST,
+  DB_PORT,
+  DB_DIALECT,
+  NODE_ENV,
+  DB_SSL,
+}: any = process.env;
 
 export interface SequelizeOptions {
   database: string;
@@ -23,6 +31,9 @@ let dbConfig: SequelizeOptions = {
   schema: "public",
 };
 
+const isProduction = NODE_ENV === "production";
+const useSSL = DB_SSL === "true" && isProduction;
+
 export const sequelize = new Sequelize(
   dbConfig.database,
   dbConfig.username,
@@ -33,8 +44,13 @@ export const sequelize = new Sequelize(
     dialect: dbConfig.dialect,
     port: dbConfig.port,
     timezone: "+00:00",
-    dialectOptions: {
-      ssl: false,
-    },
+    dialectOptions: useSSL
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
   }
 );
