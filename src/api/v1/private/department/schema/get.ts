@@ -30,7 +30,7 @@ const getResponses: JSONSchema = Schema.object()
 
 export const GET_ALL = {
   description:
-    "The purpose of this schema is to define the structure and constraints for an API endpoint that retrieves a list of departments with pagination.",
+    "The purpose of this schema is to define the structure and constraints for an API endpoint that gets all departments.",
   tags: ["DEPARTMENTS"],
   headers: Schema.ref("commonHeaders").valueOf() as JSONSchema,
   query: Schema.ref("commonQuerys").valueOf() as JSONSchema,

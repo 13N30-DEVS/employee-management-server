@@ -43,6 +43,7 @@
     "@fastify/swagger-ui": "^1.4.0",
     "@prisma/client": "^6.5.0",
     "async": "^3.2.5",
+    "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "csv-parser": "^3.0.0",
     "csv-write-stream": "^2.0.0",

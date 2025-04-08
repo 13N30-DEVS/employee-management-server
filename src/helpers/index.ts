@@ -8,6 +8,7 @@ import csv from "./csv";
 import streamToBuffer from "./streamBuffer";
 import { pagination } from "./pagination";
 import { convertTo24HourFormat, processNestedObjects } from "./helper";
+import { s3Upload } from "./s3Bucket";
 
 export {
   dateTime,
@@ -23,4 +24,5 @@ export {
   pagination,
   convertTo24HourFormat,
   processNestedObjects,
+  s3Upload,
 };

@@ -10,6 +10,10 @@ const {
   DB_DIALECT,
   NODE_ENV,
   FRONT_END_URL,
+  S3_URL,
+  AWS_ACCESS_KEY,
+  AWS_SECRET,
+  AWS_BUCKET_NAME,
 }: any = process.env;
 
 export default {
@@ -21,4 +25,8 @@ export default {
   DB_DIALECT,
   NODE_ENV,
   FRONT_END_URL,
+  S3_URL,
+  AWS_ACCESS_KEY,
+  AWS_SECRET,
+  AWS_BUCKET_NAME,
 };
