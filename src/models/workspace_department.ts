@@ -6,7 +6,7 @@ import type { workspace, workspaceId } from './workspace';
 export interface workspace_departmentAttributes {
   id: string;
   workspace_id?: string;
-  dep_id?: number;
+  department_id?: number;
   is_active?: boolean;
   created_by?: string;
   created_at?: Date;
@@ -16,24 +16,24 @@ export interface workspace_departmentAttributes {
 
 export type workspace_departmentPk = "id";
 export type workspace_departmentId = workspace_department[workspace_departmentPk];
-export type workspace_departmentOptionalAttributes = "workspace_id" | "dep_id" | "is_active" | "created_by" | "created_at" | "updated_by" | "updated_at";
+export type workspace_departmentOptionalAttributes = "workspace_id" | "department_id" | "is_active" | "created_by" | "created_at" | "updated_by" | "updated_at";
 export type workspace_departmentCreationAttributes = Optional<workspace_departmentAttributes, workspace_departmentOptionalAttributes>;
 
 export class workspace_department extends Model<workspace_departmentAttributes, workspace_departmentCreationAttributes> implements workspace_departmentAttributes {
   id!: string;
   workspace_id?: string;
-  dep_id?: number;
+  department_id?: number;
   is_active?: boolean;
   created_by?: string;
   created_at?: Date;
   updated_by?: string;
   updated_at?: Date;
 
-  // workspace_department belongsTo master_department via dep_id
-  dep!: master_department;
-  getDep!: Sequelize.BelongsToGetAssociationMixin<master_department>;
-  setDep!: Sequelize.BelongsToSetAssociationMixin<master_department, master_departmentId>;
-  createDep!: Sequelize.BelongsToCreateAssociationMixin<master_department>;
+  // workspace_department belongsTo master_department via department_id
+  department!: master_department;
+  getDepartment!: Sequelize.BelongsToGetAssociationMixin<master_department>;
+  setDepartment!: Sequelize.BelongsToSetAssociationMixin<master_department, master_departmentId>;
+  createDepartment!: Sequelize.BelongsToCreateAssociationMixin<master_department>;
   // workspace_department belongsTo workspace via workspace_id
   workspace!: workspace;
   getWorkspace!: Sequelize.BelongsToGetAssociationMixin<workspace>;
@@ -55,7 +55,7 @@ export class workspace_department extends Model<workspace_departmentAttributes, 
         key: 'id'
       }
     },
-    dep_id: {
+    department_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {

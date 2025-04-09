@@ -152,13 +152,13 @@ model master_genders {
 model workspace_departments {
   id                 String              @id @db.Uuid
   workspace_id       String?             @db.Uuid
-  dep_id             Int?
+  department_id      Int?
   is_active          Boolean?            @default(true)
   created_by         String?             @db.Uuid
   created_at         DateTime?           @db.Timestamp(6)
   updated_by         String?             @db.Uuid
   updated_at         DateTime?           @db.Timestamp(6)
-  master_departments master_departments? @relation(fields: [dep_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_departments master_departments? @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   workspaces         workspaces?         @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
@@ -167,13 +167,13 @@ model workspace_departments {
 model workspace_designations {
   id                  String               @id @db.Uuid
   workspace_id        String?              @db.Uuid
-  dep_id              Int?
+  designation_id      Int?
   is_active           Boolean?             @default(true)
   created_by          String?              @db.Uuid
   created_at          DateTime?            @db.Timestamp(6)
   updated_by          String?              @db.Uuid
   updated_at          DateTime?            @db.Timestamp(6)
-  master_designations master_designations? @relation(fields: [dep_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_designations master_designations? @relation(fields: [designation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   workspaces          workspaces?          @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")

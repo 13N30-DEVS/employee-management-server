@@ -24,7 +24,7 @@ export class master_designation extends Model<master_designationAttributes, mast
   created_at?: Date;
   updated_at?: Date;
 
-  // master_designation hasMany workspace_designation via dep_id
+  // master_designation hasMany workspace_designation via designation_id
   workspace_designations!: workspace_designation[];
   getWorkspace_designations!: Sequelize.HasManyGetAssociationsMixin<workspace_designation>;
   setWorkspace_designations!: Sequelize.HasManySetAssociationsMixin<workspace_designation, workspace_designationId>;

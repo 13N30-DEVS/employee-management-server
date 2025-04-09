@@ -24,7 +24,7 @@ export class master_department extends Model<master_departmentAttributes, master
   created_at?: Date;
   updated_at?: Date;
 
-  // master_department hasMany workspace_department via dep_id
+  // master_department hasMany workspace_department via department_id
   workspace_departments!: workspace_department[];
   getWorkspace_departments!: Sequelize.HasManyGetAssociationsMixin<workspace_department>;
   setWorkspace_departments!: Sequelize.HasManySetAssociationsMixin<workspace_department, workspace_departmentId>;

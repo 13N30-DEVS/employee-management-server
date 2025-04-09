@@ -46,3 +46,37 @@ npm run  migrate
 ```bash
 mpm run seed
 ```
+
+# Docker Commands To Run:
+
+# To build Docker Image:
+
+```bash
+docker build -t ems-backend .
+```
+
+# Create and Run Docker Container:
+
+```bash
+docker run -p 3000:3000 -d ems-backend
+```
+
+# To run both postgres and backend server on same network in docker
+
+# Create Custom Docker network
+
+```bash
+docker network create my-network
+```
+
+# Run Postgres in that network
+
+```bash
+docker run -d --name postgres --network my-network -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=your_password -e POSTGRES_DB=DEV_EMS -p 5432:5432 postgres
+```
+
+# Run app container inside the same network
+
+```bash
+docker run -d --name docker_container_name --network my-network -e DB_HOST=host.docker.internal -p 3010:3030 docker_image_name:version
+```

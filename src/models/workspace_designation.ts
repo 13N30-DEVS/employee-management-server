@@ -6,7 +6,7 @@ import type { workspace, workspaceId } from './workspace';
 export interface workspace_designationAttributes {
   id: string;
   workspace_id?: string;
-  dep_id?: number;
+  designation_id?: number;
   is_active?: boolean;
   created_by?: string;
   created_at?: Date;
@@ -16,24 +16,24 @@ export interface workspace_designationAttributes {
 
 export type workspace_designationPk = "id";
 export type workspace_designationId = workspace_designation[workspace_designationPk];
-export type workspace_designationOptionalAttributes = "workspace_id" | "dep_id" | "is_active" | "created_by" | "created_at" | "updated_by" | "updated_at";
+export type workspace_designationOptionalAttributes = "workspace_id" | "designation_id" | "is_active" | "created_by" | "created_at" | "updated_by" | "updated_at";
 export type workspace_designationCreationAttributes = Optional<workspace_designationAttributes, workspace_designationOptionalAttributes>;
 
 export class workspace_designation extends Model<workspace_designationAttributes, workspace_designationCreationAttributes> implements workspace_designationAttributes {
   id!: string;
   workspace_id?: string;
-  dep_id?: number;
+  designation_id?: number;
   is_active?: boolean;
   created_by?: string;
   created_at?: Date;
   updated_by?: string;
   updated_at?: Date;
 
-  // workspace_designation belongsTo master_designation via dep_id
-  dep!: master_designation;
-  getDep!: Sequelize.BelongsToGetAssociationMixin<master_designation>;
-  setDep!: Sequelize.BelongsToSetAssociationMixin<master_designation, master_designationId>;
-  createDep!: Sequelize.BelongsToCreateAssociationMixin<master_designation>;
+  // workspace_designation belongsTo master_designation via designation_id
+  designation!: master_designation;
+  getDesignation!: Sequelize.BelongsToGetAssociationMixin<master_designation>;
+  setDesignation!: Sequelize.BelongsToSetAssociationMixin<master_designation, master_designationId>;
+  createDesignation!: Sequelize.BelongsToCreateAssociationMixin<master_designation>;
   // workspace_designation belongsTo workspace via workspace_id
   workspace!: workspace;
   getWorkspace!: Sequelize.BelongsToGetAssociationMixin<workspace>;
@@ -55,7 +55,7 @@ export class workspace_designation extends Model<workspace_designationAttributes
         key: 'id'
       }
     },
-    dep_id: {
+    designation_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {

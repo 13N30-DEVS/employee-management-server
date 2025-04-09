@@ -74,7 +74,7 @@ CREATE TABLE "workspaces" (
 CREATE TABLE "workspace_departments" (
   "id" uuid PRIMARY KEY NOT NULL,
   "workspace_id" uuid,
-  "dep_id" int,
+  "department_id" int,
   "is_active" bool DEFAULT true,
   "created_by" uuid,
   "created_at" timestamp,
@@ -85,7 +85,7 @@ CREATE TABLE "workspace_departments" (
 CREATE TABLE "workspace_designations" (
   "id" uuid PRIMARY KEY NOT NULL,
   "workspace_id" uuid,
-  "dep_id" int,
+  "designation_id" int,
   "is_active" bool DEFAULT true,
   "created_by" uuid,
   "created_at" timestamp,
@@ -146,11 +146,11 @@ ALTER TABLE "auth"."users" ADD FOREIGN KEY ("status") REFERENCES "auth"."master_
 
 ALTER TABLE "workspace_departments" ADD FOREIGN KEY ("workspace_id") REFERENCES "workspaces" ("id");
 
-ALTER TABLE "workspace_departments" ADD FOREIGN KEY ("dep_id") REFERENCES "master_departments" ("id");
+ALTER TABLE "workspace_departments" ADD FOREIGN KEY ("department_id") REFERENCES "master_departments" ("id");
 
 ALTER TABLE "workspace_designations" ADD FOREIGN KEY ("workspace_id") REFERENCES "workspaces" ("id");
 
-ALTER TABLE "workspace_designations" ADD FOREIGN KEY ("dep_id") REFERENCES "master_designations" ("id");
+ALTER TABLE "workspace_designations" ADD FOREIGN KEY ("designation_id") REFERENCES "master_designations" ("id");
 
 ALTER TABLE "employee_informations" ADD FOREIGN KEY ("user_id") REFERENCES "auth"."users" ("id");
 

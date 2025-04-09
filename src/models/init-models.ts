@@ -88,10 +88,10 @@ export function initModels(sequelize: Sequelize) {
   employee_information.hasMany(employee_detail, { as: "employee_details", foreignKey: "emp_id"});
   employee_role_mapping.belongsTo(employee_information, { as: "emp", foreignKey: "emp_id"});
   employee_information.hasMany(employee_role_mapping, { as: "employee_role_mappings", foreignKey: "emp_id"});
-  workspace_department.belongsTo(master_department, { as: "dep", foreignKey: "dep_id"});
-  master_department.hasMany(workspace_department, { as: "workspace_departments", foreignKey: "dep_id"});
-  workspace_designation.belongsTo(master_designation, { as: "dep", foreignKey: "dep_id"});
-  master_designation.hasMany(workspace_designation, { as: "workspace_designations", foreignKey: "dep_id"});
+  workspace_department.belongsTo(master_department, { as: "department", foreignKey: "department_id"});
+  master_department.hasMany(workspace_department, { as: "workspace_departments", foreignKey: "department_id"});
+  workspace_designation.belongsTo(master_designation, { as: "designation", foreignKey: "designation_id"});
+  master_designation.hasMany(workspace_designation, { as: "workspace_designations", foreignKey: "designation_id"});
   employee_information.belongsTo(master_gender, { as: "gender_master_gender", foreignKey: "gender"});
   master_gender.hasMany(employee_information, { as: "employee_informations", foreignKey: "gender"});
   employee_role_mapping.belongsTo(master_user_role, { as: "role", foreignKey: "role_id"});
