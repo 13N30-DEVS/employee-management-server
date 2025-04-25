@@ -10,6 +10,7 @@ export interface employee_informationAttributes {
   id: string;
   user_id: string;
   workspace_id?: string;
+  name?: string;
   gender?: number;
   email?: string;
   mobile_number?: string;
@@ -26,13 +27,14 @@ export interface employee_informationAttributes {
 
 export type employee_informationPk = "id";
 export type employee_informationId = employee_information[employee_informationPk];
-export type employee_informationOptionalAttributes = "workspace_id" | "gender" | "email" | "mobile_number" | "profile_pic" | "is_active" | "is_deleted" | "created_by" | "created_at" | "updated_by" | "updated_at" | "deleted_by" | "deleted_at";
+export type employee_informationOptionalAttributes = "workspace_id" | "name" | "gender" | "email" | "mobile_number" | "profile_pic" | "is_active" | "is_deleted" | "created_by" | "created_at" | "updated_by" | "updated_at" | "deleted_by" | "deleted_at";
 export type employee_informationCreationAttributes = Optional<employee_informationAttributes, employee_informationOptionalAttributes>;
 
 export class employee_information extends Model<employee_informationAttributes, employee_informationCreationAttributes> implements employee_informationAttributes {
   id!: string;
   user_id!: string;
   workspace_id?: string;
+  name?: string;
   gender?: number;
   email?: string;
   mobile_number?: string;
@@ -108,6 +110,10 @@ export class employee_information extends Model<employee_informationAttributes, 
         model: 'workspaces',
         key: 'id'
       }
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     gender: {
       type: DataTypes.INTEGER,

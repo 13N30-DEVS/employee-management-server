@@ -97,6 +97,7 @@ CREATE TABLE "employee_informations" (
   "id" uuid PRIMARY KEY NOT NULL,
   "user_id" uuid NOT NULL,
   "workspace_id" uuid,
+  "name" varchar,
   "gender" int,
   "email" varchar UNIQUE,
   "mobile_number" varchar UNIQUE,

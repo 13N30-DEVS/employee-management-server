@@ -74,6 +74,7 @@ model employee_informations {
   id                     String                   @id @db.Uuid
   user_id                String                   @db.Uuid
   workspace_id           String?                  @db.Uuid
+  name                   String?                  @db.VarChar
   gender                 Int?
   email                  String?                  @unique @db.VarChar
   mobile_number          String?                  @unique @db.VarChar

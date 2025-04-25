@@ -73,21 +73,6 @@ const main = async () => {
       console.log(`${seed.table} completed`);
     }
 
-    // Employee Informations
-    if (seed.table == "employee_informations") {
-      console.log(`${seed.table} started`);
-      seed.data.forEach((data: any) => {
-        upsertPromises.push(
-          prisma.employee_informations.upsert({
-            where: { id: data.id },
-            update: data,
-            create: data,
-          })
-        );
-      });
-      console.log(`${seed.table} completed`);
-    }
-
     // Master Designations
     if (seed.table == "master_designations") {
       console.log(`${seed.table} started`);
@@ -109,6 +94,21 @@ const main = async () => {
       seed.data.forEach((data: any) => {
         upsertPromises.push(
           prisma.master_departments.upsert({
+            where: { id: data.id },
+            update: data,
+            create: data,
+          })
+        );
+      });
+      console.log(`${seed.table} completed`);
+    }
+
+    // Employee Informations
+    if (seed.table == "employee_informations") {
+      console.log(`${seed.table} started`);
+      seed.data.forEach((data: any) => {
+        upsertPromises.push(
+          prisma.employee_informations.upsert({
             where: { id: data.id },
             update: data,
             create: data,
