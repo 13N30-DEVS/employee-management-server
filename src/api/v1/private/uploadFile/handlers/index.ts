@@ -19,7 +19,6 @@ async function UploadFile(request: FastifyRequest, reply: FastifyReply) {
     const res: any = await singleFileUpload({
       uploadedFile,
     });
-
     // -----------------------------
     //  RESPONSE
     // -----------------------------

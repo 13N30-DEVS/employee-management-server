@@ -2,7 +2,7 @@ import { users } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 
 const salt = bcrypt.genSaltSync(10);
-const hash = bcrypt.hashSync("admin", salt);
+const hash = bcrypt.hashSync("Login@321", salt);
 
 export const Users: {
   table: string;

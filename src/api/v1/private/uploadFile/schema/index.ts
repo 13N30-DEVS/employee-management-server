@@ -2,23 +2,17 @@ import { makeResponseSchema } from "@helpers";
 import Schema, { JSONSchema } from "fluent-json-schema";
 
 const createResponse: JSONSchema = Schema.object()
-  .prop(
-    "data",
-    Schema.object()
-      .prop("fileName", Schema.string())
-      .prop("filePath", Schema.string())
-      .prop("fileURL", Schema.string())
-      .additionalProperties(true)
-  )
+  .prop("fileName", Schema.string())
+  .prop("filePath", Schema.string())
+  .prop("fileURL", Schema.string())
+  .additionalProperties(true)
   .prop("meta", Schema.object().prop("message", Schema.string()))
   .valueOf() as JSONSchema;
 
-const requestBody = {
-  body: Schema.object()
-    .prop("file", Schema.raw({ description: "Multipart file" }))
-    .required(["file"])
-    .valueOf() as JSONSchema,
-};
+const requestBody = Schema.object()
+  .prop("file", Schema.raw({ description: "Multipart file" }))
+  .required(["file"])
+  .valueOf() as JSONSchema;
 
 const UPLOAD = {
   description:
