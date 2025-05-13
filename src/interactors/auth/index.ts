@@ -34,6 +34,8 @@ export const SignIn = async (options: SignInPayload, fastify: any) => {
       roleName: user.role_master_user_role?.name,
       statusId: user.status_master_user_status?.id,
       statusName: user.status_master_user_status?.name,
+      workspaceId: user.employee_informations[0]?.workspace?.id,
+      workspaceName: user.employee_informations[0]?.workspace?.workspace_name,
     });
 
     return { token: authToken };

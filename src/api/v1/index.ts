@@ -58,6 +58,11 @@ const routes = (fastify: FastifyInstance, _: any, done: any) => {
           reply.status(401).send({ message: "Unauthorized" });
           return;
         }
+
+        if (!request.headers?.["x-workspace-id"]) {
+          reply.status(401).send({ message: "Workspace id not found" });
+          return;
+        }
       }
     );
     routesLoader(innerFastify, path.join(__dirname, "private"));

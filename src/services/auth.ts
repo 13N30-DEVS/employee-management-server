@@ -1,5 +1,11 @@
 import { Logger } from "@helpers";
-import { master_user_role, master_user_status, user } from "@models";
+import {
+  employee_information,
+  master_user_role,
+  master_user_status,
+  user,
+  workspace,
+} from "@models";
 
 interface FindByEmailId {
   emailId: string;
@@ -31,6 +37,20 @@ class Auth {
             required: false,
             model: master_user_status,
             as: "status_master_user_status",
+          },
+          {
+            attributes: ["workspace_id"],
+            required: false,
+            model: employee_information,
+            as: "employee_informations",
+            include: [
+              {
+                attributes: ["id", "workspace_name"],
+                required: false,
+                model: workspace,
+                as: "workspace",
+              },
+            ],
           },
         ],
         where: { email_id: emailId },
