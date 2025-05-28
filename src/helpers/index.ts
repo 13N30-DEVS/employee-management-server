@@ -9,6 +9,7 @@ import streamToBuffer from "./streamBuffer";
 import { pagination } from "./pagination";
 import { convertTo24HourFormat, processNestedObjects } from "./helper";
 import { s3Upload } from "./s3Bucket";
+import { sendMail } from "./mailTrigger";
 
 export {
   dateTime,
@@ -25,4 +26,5 @@ export {
   convertTo24HourFormat,
   processNestedObjects,
   s3Upload,
+  sendMail,
 };

@@ -14,6 +14,11 @@ const {
   AWS_ACCESS_KEY,
   AWS_SECRET,
   AWS_BUCKET_NAME,
+  BREVO_SMTP_SERVER,
+  BREVO_PORT,
+  BREVO_LOGIN,
+  BREVO_USER,
+  BREVO_PASSWORD,
 }: any = process.env;
 
 export default {
@@ -29,4 +34,9 @@ export default {
   AWS_ACCESS_KEY,
   AWS_SECRET,
   AWS_BUCKET_NAME,
+  BREVO_SMTP_SERVER,
+  BREVO_PORT,
+  BREVO_LOGIN,
+  BREVO_USER,
+  BREVO_PASSWORD,
 };
