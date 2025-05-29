@@ -1,5 +1,12 @@
 import * as fs from "fs";
 
+/**
+ * Converts a stream to a buffer.
+ *
+ * @param {fs.ReadStream} stream A readable stream.
+ *
+ * @returns {Promise<Buffer>} A promise that resolves with the buffer.
+ */
 async function streamToBufferAsync(stream: fs.ReadStream): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
     const chunks: Buffer[] = [];

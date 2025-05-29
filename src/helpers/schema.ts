@@ -29,8 +29,23 @@ export const commonQuerys = Schema.object()
     )
   );
 
-// Common Response for Schema
-export const makeResponseSchema = (response: JSONSchema) => {
+/**
+ * Generates a response schema object containing predefined JSON schemas for different HTTP status codes.
+ *
+ * @param {JSONSchema} response - The JSON schema representing the successful response body for the 200 status code.
+ *
+ * @returns {Record<string, JSONSchema>} - An object mapping HTTP status codes to their corresponding JSON schemas.
+ *
+ * The function returns an object with predefined response schemas for the following status codes:
+ * - "200": Represents a successful response and uses the provided schema.
+ * - "400": Represents a bad request with an error and message properties.
+ * - "401": Represents an unauthorized response with additional properties allowed.
+ * - "409": Represents a conflict error with additional properties allowed.
+ * - "500": Represents an internal server error with additional properties allowed.
+ */
+export const makeResponseSchema = (
+  response: JSONSchema
+): Record<string, JSONSchema> => {
   const responseType: Record<string, JSONSchema> = {
     "200": response,
     "400": Schema.object()

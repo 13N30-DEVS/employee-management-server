@@ -8,7 +8,18 @@ interface signInType {
   password: string;
 }
 
-// Sign In
+/**
+ * Handles the signin request, validates the request body using the `signInType` interface,
+ * calls the `SignIn` interactor to generate an authentication token, and returns the token
+ * in the response. If any error occurs during the signin process, it catches the error,
+ * logs it, and returns an appropriate error response based on the error status code.
+ *
+ * @param request - The request object containing the emailId and password.
+ * @param reply - The reply object to send the response.
+ * @param fastify - The Fastify instance to pass to the `SignIn` interactor.
+ *
+ * @returns A promise that resolves to a response object with the authentication token.
+ */
 export async function SIGN_IN(
   request: FastifyRequest,
   reply: FastifyReply,

@@ -9,18 +9,18 @@ interface FindAllOptions {
 }
 
 /**
- * A class representing a database query to retrieve master department information.
+ * A class representing a service for managing master designations.
  *
- * @class Department
+ * @class Designation
  * @static
  * @throws {Error} Throws an error if there's an issue with constructing the query.
  */
 class Designation {
   /**
-   * Retrieves a list of master departments based on the given search query.
+   * Retrieves a list of master designations based on the given search query and pagination options.
    *
    * @param {FindAllOptions} options - An object containing the search query and pagination options.
-   * @returns {Promise<{DepartmentResult: master_department[]; totalCount: number}>} - A promise that resolves to an object containing the list of master departments and the total count of master departments.
+   * @returns {Promise<{DesignationResult: master_designation[]; totalCount: number}>} - A promise that resolves to an object containing the list of master designations and the total count of master designations.
    * @throws {Error} Throws an error if there's an issue with constructing the query.
    */
   static async findAll(

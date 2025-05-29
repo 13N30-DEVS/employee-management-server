@@ -7,7 +7,17 @@ interface SignInPayload {
   password: string;
 }
 
-export const SignIn = async (options: SignInPayload, fastify: any) => {
+/**
+ * Signs in a user with the provided emailId and password.
+ * @param {SignInPayload} options - EmailId and password of the user to sign in.
+ * @param {FastifyInstance} fastify - The Fastify instance to use for generating the authentication token.
+ * @returns {Promise<{ token: string }>} A promise that resolves to an object with a single property - token, which is the authentication token for the user.
+ * @throws {Error} If the user does not exist or the password is incorrect. The error will have a statusCode property set to 404 or 403, respectively.
+ */
+export const SignIn = async (
+  options: SignInPayload,
+  fastify: any
+): Promise<{ token: string }> => {
   try {
     const { emailId, password } = options;
 

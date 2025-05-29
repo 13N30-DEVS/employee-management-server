@@ -9,7 +9,14 @@ aws.config.update({
 
 const s3 = new aws.S3();
 
-export const s3Upload = (file: any) => {
+/**
+ * @function s3Upload
+ * @description Uploads a file to the S3 Bucket and returns the file URL & Path
+ * @param {Object} file - The file buffer to be uploaded
+ * @return {Promise<Object>}
+ * @throws {Error}
+ */
+export const s3Upload = (file: any): Promise<object> => {
   return new Promise(async (resolve, reject) => {
     try {
       // File Type

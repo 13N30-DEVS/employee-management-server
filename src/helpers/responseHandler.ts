@@ -101,6 +101,24 @@ const httpStatusCodes: Record<
   },
 };
 
+/**
+ * Sends a response based on the provided response type and options.
+ *
+ * @param {FastifyRequest} request - The Fastify request object.
+ * @param {FastifyReply} reply - The Fastify reply object to send the response.
+ * @param {responseType} responseType - The type of response to be sent, determining the HTTP status code.
+ * @param {Options} options - Additional options to customize the response.
+ * @param {any} options.data - The data to be sent in the response body.
+ * @param {string | undefined} options.headers - The content type header for the response.
+ * @param {string | undefined} options.customMessage - A custom message to include in the response.
+ * @param {any} options.error - Error details to include if the response is an error type.
+ *
+ * @throws Will throw an error if the response type is invalid.
+ *
+ * The function sends an HTTP response based on the provided response type,
+ * setting the appropriate status code and headers. It supports both error
+ * and success responses, and handles file download responses when necessary.
+ */
 function handleResponse(
   request: FastifyRequest,
   reply: FastifyReply,
