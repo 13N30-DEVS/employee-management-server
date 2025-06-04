@@ -7,17 +7,6 @@ enum Severity {
 }
 
 class Logger {
-  /**
-   * Logs a message with the given severity. If request is provided, the log message
-   * includes the request data. If error is provided, the log message includes the error
-   * message.
-   *
-   * @param {Severity} severity - The severity of the log message.
-   * @param {string} message - The log message.
-   * @param {Error | false | any} [error] - The error to log.
-   * @param {FastifyRequest} [request] - The request to log.
-   * @param {string} [module] - The module name to log.
-   */
   private static log(
     severity: Severity,
     message: string,
@@ -78,41 +67,14 @@ class Logger {
     console.log(logMessage);
   }
 
-  /**
-   * Logs an info message. If request is provided, the log message includes the request
-   * data. If module is provided, the log message includes the module name.
-   *
-   * @param {FastifyRequest} request - The request to log.
-   * @param {string} message - The log message.
-   * @param {string} [module] - The module name to log.
-   */
   static info(request: FastifyRequest, message: string, module?: string) {
     Logger.log(Severity.INFO, message, undefined, request, module);
   }
 
-  /**
-   * Logs a warning message. If request is provided, the log message includes the request
-   * data. If module is provided, the log message includes the module name.
-   *
-   * @param {FastifyRequest} request - The request to log.
-   * @param {string} message - The log message.
-   * @param {string} [module] - The module name to log.
-   */
   static warning(request: FastifyRequest, message: string, module?: string) {
     Logger.log(Severity.WARNING, message, undefined, request, module);
   }
 
-  /**
-   * Logs an error message. If request is provided, the log message includes the request
-   * data. If module is provided, the log message includes the module name. If error is
-   * provided, the log message includes the error message and stack trace.
-   *
-   * @param {FastifyRequest} request - The request to log.
-   * @param {string} message - The log message.
-   * @param {Error | false | any} [error] - The error to log. If false, the error is
-   *   not logged.
-   * @param {string} [module] - The module name to log.
-   */
   static error(
     request: FastifyRequest,
     message: string,
