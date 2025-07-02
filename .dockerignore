@@ -32,3 +32,15 @@
 **/dist
 LICENSE
 README.md
+
+node_modules
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+.env
+*.md
+test
+src/**/*.test.*
+src/**/*.spec.*
+sonar-project.properties

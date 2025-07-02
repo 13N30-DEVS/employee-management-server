@@ -18,8 +18,13 @@ WORKDIR /app
 # Copy the rest of the application code
 COPY . .
 
+# See .dockerignore to avoid copying sensitive files
+
 # Install dependencies and build the TypeScript code in a single RUN instruction
-RUN npm install && npm run build
+RUN npm install --ignore-scripts && npm run build
+
+# Switch to non-root user for security
+USER node
 
 # Expose the port your application listens on
 EXPOSE 3030
