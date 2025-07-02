@@ -18,31 +18,24 @@ const routesLoader = (fastify: FastifyInstance, sourceDir: string) => {
     });
 };
 
-const routes = (fastify: FastifyInstance, _: any, done: any) => {
+const routes = (fastify: FastifyInstance, _: any, _done: any) => {
   // Pre-validation hook for JWT authentication for private routes
   fastify.addHook(
     "onRequest",
-    async (request: ExtendFastifyRequest, reply: FastifyReply) => {
-      try {
-        const authorizationHeader: any = request.headers.authorization;
+    async (request: ExtendFastifyRequest, _reply: FastifyReply) => {
+      const authorizationHeader = request.headers.authorization;
 
-        // For Private Routes [Authorization Token In Header]
-        if (authorizationHeader) {
-          const splittoken: any = authorizationHeader?.split(" ")?.[1]!;
-
-          let decodedToken: any = fastify.jwt.decode(splittoken, {
+      // For Private Routes [Authorization Token In Header]
+      if (authorizationHeader) {
+        const splittoken = authorizationHeader.split(" ")[1];
+        if (splittoken) {
+          const decodedToken = fastify.jwt.decode(splittoken, {
             complete: false,
           });
-
           request.decodedToken = decodedToken;
-        } else {
-          // Skip Token Verification for Public Routes
-          return;
         }
-      } catch (error: any) {
-        // Handle Authentication Errors
-        return reply.status(401).send({ message: "Unauthorized" });
       }
+      // No else block needed; just proceed for public routes
     }
   );
 
@@ -50,7 +43,7 @@ const routes = (fastify: FastifyInstance, _: any, done: any) => {
   routesLoader(fastify, path.join(__dirname, "public"));
   //Routes of Private API
   // routesLoader(fastify, join(__dirname, "private"));
-  fastify.register((innerFastify, opts, next) => {
+  fastify.register((innerFastify, _opts, next) => {
     innerFastify.addHook(
       "onRequest",
       async (request: ExtendFastifyRequest, reply: FastifyReply) => {
@@ -68,8 +61,6 @@ const routes = (fastify: FastifyInstance, _: any, done: any) => {
     routesLoader(innerFastify, path.join(__dirname, "private"));
     next();
   });
-
-  done();
 };
 
 export default routes;

@@ -1,6 +1,6 @@
 import { env } from "@config";
 import * as url from "url";
-import { Logger } from "@helpers";
+import { Logger } from "./logger";
 
 interface PaginationResult {
   limit: number;
@@ -93,7 +93,7 @@ function generateLinks(
  *   - url: The URL for the actual endpoint.
  * @returns - An object containing pagination metadata.
  */
-function pagination<T>(options: {
+function pagination(options: {
   offset?: number;
   page?: number;
   limit: number;
@@ -102,10 +102,6 @@ function pagination<T>(options: {
 }): PaginationResult {
   try {
     let { limit, offset = 0, page, url, totalCount } = options;
-
-    if (!offset) {
-      offset = 0;
-    }
 
     if (!page) {
       page = Math.floor(offset / limit) + 1;

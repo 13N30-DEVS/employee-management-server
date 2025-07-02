@@ -17,21 +17,20 @@ interface ExtendFastifyRequest extends FastifyRequest {
 function queryRequestInfo(request: ExtendFastifyRequest) {
   try {
     // For Get Request
-
+    const { url } = request;
     const {
-      query: { offset = 0, limit = 5, search = "", ...rest },
-      url,
-    } = request as {
-      query: {
-        offset: number;
-        limit: number;
-        search: string;
-        rest?: { [key: string]: string | number };
-      };
-      url: string;
+      offset = 0,
+      limit = 5,
+      search = "",
+      ...rest
+    } = request.query as {
+      offset?: number;
+      limit?: number;
+      search?: string;
+      [key: string]: any;
     };
 
-    const decodedToken: any = request.decodedToken as any;
+    const decodedToken: any = request.decodedToken;
 
     return {
       offset,

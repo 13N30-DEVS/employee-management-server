@@ -17,7 +17,7 @@ const s3 = new aws.S3();
  * @throws {Error}
  */
 export const s3Upload = (file: any): Promise<object> => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise((resolve, reject) => {
     try {
       // File Type
       const fileType: string =

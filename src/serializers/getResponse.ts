@@ -18,7 +18,7 @@ interface GetServiceResponse {
   page: Array<object>;
   count?: number;
   limit?: number;
-  offset?: number | undefined;
+  offset?: number;
   totalPages?: number;
   totalCount?: number;
   previousPage?: number | null;

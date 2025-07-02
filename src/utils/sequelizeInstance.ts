@@ -18,7 +18,7 @@ export interface SequelizeOptions {
   host: string;
   dialect: Dialect;
   port: number;
-  schema: string | "public";
+  schema: string;
 }
 
 let dbConfig: SequelizeOptions = {

@@ -24,8 +24,8 @@ const app: FastifyPluginAsync<AppOptions> = async (
   // those should be support plugins that are reused
   // through your application
 
-  void fastify.addSchema(commonHeaders);
-  void fastify.addSchema(commonQuerys);
+  fastify.addSchema(commonHeaders);
+  fastify.addSchema(commonQuerys);
 
   fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),

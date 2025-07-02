@@ -46,7 +46,7 @@ class Department {
         });
 
       return {
-        DepartmentResult: masterDepartments || [],
+        DepartmentResult: masterDepartments ?? [],
         totalCount: count,
       };
     } catch (error: any) {

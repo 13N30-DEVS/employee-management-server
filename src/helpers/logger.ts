@@ -10,7 +10,7 @@ class Logger {
   private static log(
     severity: Severity,
     message: string,
-    error?: Error | false | any,
+    error?: Error | false | unknown,
     request?: FastifyRequest,
     module?: string
   ) {
@@ -61,7 +61,13 @@ class Logger {
     logMessage += `\x1b[0m ${message}`;
 
     if (error) {
-      logMessage += `\x1b[31m: ${error.message}\x1b[0m`;
+      if (error instanceof Error) {
+        logMessage += `\x1b[31m: ${error.message}\x1b[0m`;
+      } else if (typeof error === "string") {
+        logMessage += `\x1b[31m: ${error}\x1b[0m`;
+      } else {
+        logMessage += `\x1b[31m: ${JSON.stringify(error)}\x1b[0m`;
+      }
     }
 
     console.log(logMessage);
@@ -78,7 +84,7 @@ class Logger {
   static error(
     request: FastifyRequest,
     message: string,
-    error?: Error | false | any,
+    error?: Error | false | unknown,
     module?: string
   ) {
     Logger.log(Severity.ERROR, message, error, request, module);

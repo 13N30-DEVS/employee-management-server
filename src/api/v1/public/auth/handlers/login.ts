@@ -3,13 +3,13 @@ import { Logger, handleResponse, responseType } from "@helpers";
 import { SignIn } from "@interactors";
 import { postRequestInfo } from "@mappers";
 
-interface signInType {
+interface SignInType {
   emailId: string;
   password: string;
 }
 
 /**
- * Handles the signin request, validates the request body using the `signInType` interface,
+ * Handles the signin request, validates the request body using the `SignInType` interface,
  * calls the `SignIn` interactor to generate an authentication token, and returns the token
  * in the response. If any error occurs during the signin process, it catches the error,
  * logs it, and returns an appropriate error response based on the error status code.
@@ -30,7 +30,7 @@ export async function SIGN_IN(
     const payload = { emailId, password };
 
     // Call SignIn function
-    const result = await SignIn(payload as signInType, fastify);
+    const result = await SignIn(payload as SignInType, fastify);
 
     // Return successful response
     return handleResponse(request, reply, responseType?.OK, { data: result });

@@ -10,7 +10,7 @@ ARG NODE_VERSION=22.14.0
 
 ################################################################################
 # Use node image for base image for all stages.
-FROM node:${NODE_VERSION}-alpine as base
+FROM node:${NODE_VERSION}-alpine AS base
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -18,12 +18,8 @@ WORKDIR /app
 # Copy the rest of the application code
 COPY . .
 
-# Install dependencies
-RUN npm install
-
-
-# Build the TypeScript code
-RUN npm run build
+# Install dependencies and build the TypeScript code in a single RUN instruction
+RUN npm install && npm run build
 
 # Expose the port your application listens on
 EXPOSE 3030

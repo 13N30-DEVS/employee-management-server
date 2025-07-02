@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 
 interface Options {
   data?: any;
-  headers?: string | undefined;
+  headers?: string;
   customMessage?: string;
   error?: any;
 }
@@ -163,9 +163,7 @@ function handleResponse(
     return reply.send({
       ...data,
       meta: {
-        message: customMessage
-          ? customMessage
-          : httpStatusCodes[responseType]["message"],
+        message: customMessage ?? httpStatusCodes[responseType]["message"],
       },
     });
   }

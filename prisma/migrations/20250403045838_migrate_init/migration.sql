@@ -2,8 +2,8 @@ CREATE SCHEMA "auth";
 
 CREATE TABLE "auth"."master_user_roles" (
   "id" int PRIMARY KEY NOT NULL,
-  "name" varchar,
-  "description" varchar,
+  "name" varchar2(255),
+  "description" varchar2(255),
   "is_active" bool DEFAULT true,
   "created_at" timestamp,
   "updated_at" timestamp
@@ -11,8 +11,8 @@ CREATE TABLE "auth"."master_user_roles" (
 
 CREATE TABLE "auth"."master_user_statuses" (
   "id" int PRIMARY KEY NOT NULL,
-  "name" varchar,
-  "description" varchar,
+  "name" varchar2(255),
+  "description" varchar2(255),
   "is_active" bool DEFAULT true,
   "created_at" timestamp,
   "updated_at" timestamp
@@ -20,8 +20,8 @@ CREATE TABLE "auth"."master_user_statuses" (
 
 CREATE TABLE "auth"."users" (
   "id" uuid PRIMARY KEY NOT NULL,
-  "email_id" varchar(255),
-  "password_hash" varchar(255),
+  "email_id" varchar2(255),
+  "password_hash" varchar2(255),
   "role" int,
   "status" int,
   "is_active" bool DEFAULT true,
@@ -33,8 +33,8 @@ CREATE TABLE "auth"."users" (
 
 CREATE TABLE "master_genders" (
   "id" int PRIMARY KEY NOT NULL,
-  "name" varchar,
-  "description" varchar,
+  "name" varchar2(255),
+  "description" varchar2(255),
   "is_active" bool DEFAULT true,
   "created_at" timestamp,
   "updated_at" timestamp
@@ -42,8 +42,8 @@ CREATE TABLE "master_genders" (
 
 CREATE TABLE "master_departments" (
   "id" int PRIMARY KEY NOT NULL,
-  "name" varchar,
-  "description" varchar,
+  "name" varchar2(255),
+  "description" varchar2(255),
   "is_active" bool DEFAULT true,
   "created_at" timestamp,
   "updated_at" timestamp
@@ -51,8 +51,8 @@ CREATE TABLE "master_departments" (
 
 CREATE TABLE "master_designations" (
   "id" int PRIMARY KEY NOT NULL,
-  "name" varchar,
-  "description" varchar,
+  "name" varchar2(255),
+  "description" varchar2(255),
   "is_active" bool DEFAULT true,
   "created_at" timestamp,
   "updated_at" timestamp
@@ -60,7 +60,7 @@ CREATE TABLE "master_designations" (
 
 CREATE TABLE "workspaces" (
   "id" uuid PRIMARY KEY NOT NULL,
-  "workspace_name" varchar,
+  "workspace_name" varchar2(255),
   "is_active" bool DEFAULT true,
   "is_deleted" bool DEFAULT false,
   "created_by" uuid,
@@ -97,11 +97,11 @@ CREATE TABLE "employee_informations" (
   "id" uuid PRIMARY KEY NOT NULL,
   "user_id" uuid NOT NULL,
   "workspace_id" uuid,
-  "name" varchar,
+  "name" varchar2(255),
   "gender" int,
-  "email" varchar UNIQUE,
-  "mobile_number" varchar UNIQUE,
-  "profile_pic" varchar,
+  "email" varchar2(255) UNIQUE,
+  "mobile_number" varchar2(255) UNIQUE,
+  "profile_pic" varchar2(255),
   "is_active" bool DEFAULT true,
   "is_deleted" bool DEFAULT false,
   "created_by" uuid,

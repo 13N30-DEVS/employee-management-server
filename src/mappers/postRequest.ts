@@ -7,9 +7,9 @@ import { Logger, processNestedObjects } from "@helpers";
  * @returns An object containing extracted parameters.
  * @throws {Error} Throws an error if there's an issue extracting parameters.
  */
-function postRequestInfo<T>(request: any) {
+function postRequestInfo(request: any) {
   try {
-    const body = request.body as any;
+    const body = request.body;
 
     processNestedObjects(body);
 

@@ -22,7 +22,8 @@ export async function singleFileUpload({
 
     if (uploadData?.status === 200) {
       // If Uploading File to s3 Gets Success
-      (fileURL = uploadData?.fileURL), (filePath = uploadData?.filePath);
+      fileURL = uploadData?.fileURL;
+      filePath = uploadData?.filePath;
       return {
         code: 200,
         responseData: { fileName: uploadedFile?.fileName, fileURL, filePath },

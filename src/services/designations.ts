@@ -46,7 +46,7 @@ class Designation {
         });
 
       return {
-        DesignationResult: masterDesignations || [],
+        DesignationResult: masterDesignations ?? [],
         totalCount: count,
       };
     } catch (error: any) {
