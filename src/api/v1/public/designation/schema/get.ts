@@ -1,7 +1,7 @@
 import { makeResponseSchema } from "@helpers";
 import Schema, { JSONSchema } from "fluent-json-schema";
 
-const getResponses: JSONSchema = Schema.object()
+const getDesignationResponses: JSONSchema = Schema.object()
   .prop(
     "page",
     Schema.array().items(
@@ -34,5 +34,5 @@ export const GET_ALL = {
   tags: ["DESIGNATIONS"],
   headers: Schema.ref("commonHeaders").valueOf() as JSONSchema,
   query: Schema.ref("commonQuerys").valueOf() as JSONSchema,
-  response: makeResponseSchema(getResponses),
+  response: makeResponseSchema(getDesignationResponses),
 };
