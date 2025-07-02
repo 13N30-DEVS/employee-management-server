@@ -54,7 +54,6 @@ const routes = (fastify: FastifyInstance, _: any, _done: any) => {
 
         if (!request.headers?.["x-workspace-id"]) {
           reply.status(401).send({ message: "Workspace id not found" });
-          return;
         }
       }
     );

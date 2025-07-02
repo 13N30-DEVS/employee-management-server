@@ -10,7 +10,7 @@ class Logger {
   private static log(
     severity: Severity,
     message: string,
-    error?: Error | false | unknown,
+    error?: unknown,
     request?: FastifyRequest,
     module?: string
   ) {
@@ -84,7 +84,7 @@ class Logger {
   static error(
     request: FastifyRequest,
     message: string,
-    error?: Error | false | unknown,
+    error?: unknown,
     module?: string
   ) {
     Logger.log(Severity.ERROR, message, error, request, module);
