@@ -167,5 +167,38 @@ export const masterDepartments: {
       created_at: new Date(),
       updated_at: new Date(),
     },
+    {
+      id: 21,
+      name: "Networking & Infrastructure",
+      description: "Manages servers, routers, switches, and network systems",
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      id: 22,
+      name: "Transport & Fleet Management",
+      description: "Handles company vehicles and transportation services",
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      id: 23,
+      name: "Maintenance",
+      description: "Responsible for repair, upkeep, and workplace utilities",
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    {
+      id: 24,
+      name: "IT Administration",
+      description:
+        "Manages IT hardware, software licensing, and end-user support",
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
   ],
 };
