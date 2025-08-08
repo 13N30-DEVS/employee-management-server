@@ -18,14 +18,11 @@ const routesLoader = (fastify: FastifyInstance, sourceDir: string) => {
     });
 };
 
-const routes = (fastify: FastifyInstance, _: any, _done: any) => {
-  // Pre-validation hook for JWT authentication for private routes
+const routes = async (fastify: FastifyInstance) => {
   fastify.addHook(
     "onRequest",
     async (request: ExtendFastifyRequest, _reply: FastifyReply) => {
       const authorizationHeader = request.headers.authorization;
-
-      // For Private Routes [Authorization Token In Header]
       if (authorizationHeader) {
         const splittoken = authorizationHeader.split(" ")[1];
         if (splittoken) {
@@ -35,15 +32,14 @@ const routes = (fastify: FastifyInstance, _: any, _done: any) => {
           request.decodedToken = decodedToken;
         }
       }
-      // No else block needed; just proceed for public routes
     }
   );
 
-  //Routes of Public API
+  // Await route loading
   routesLoader(fastify, path.join(__dirname, "public"));
-  //Routes of Private API
-  // routesLoader(fastify, join(__dirname, "private"));
-  fastify.register((innerFastify, _opts, next) => {
+
+  // Register private routes with auth hook
+  await fastify.register(async (innerFastify) => {
     innerFastify.addHook(
       "onRequest",
       async (request: ExtendFastifyRequest, reply: FastifyReply) => {
@@ -57,8 +53,8 @@ const routes = (fastify: FastifyInstance, _: any, _done: any) => {
         }
       }
     );
+
     routesLoader(innerFastify, path.join(__dirname, "private"));
-    next();
   });
 };
 
