@@ -45,11 +45,11 @@ export class master_user_status extends Model<master_user_statusAttributes, mast
       primaryKey: true
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     is_active: {

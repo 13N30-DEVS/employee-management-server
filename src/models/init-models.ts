@@ -21,6 +21,8 @@ import { workspace_department as _workspace_department } from "./workspace_depar
 import type { workspace_departmentAttributes, workspace_departmentCreationAttributes } from "./workspace_department";
 import { workspace_designation as _workspace_designation } from "./workspace_designation";
 import type { workspace_designationAttributes, workspace_designationCreationAttributes } from "./workspace_designation";
+import { workspace_shift as _workspace_shift } from "./workspace_shift";
+import type { workspace_shiftAttributes, workspace_shiftCreationAttributes } from "./workspace_shift";
 import { workspace as _workspace } from "./workspace";
 import type { workspaceAttributes, workspaceCreationAttributes } from "./workspace";
 
@@ -36,6 +38,7 @@ export {
   _user as user,
   _workspace_department as workspace_department,
   _workspace_designation as workspace_designation,
+  _workspace_shift as workspace_shift,
   _workspace as workspace,
 };
 
@@ -62,6 +65,8 @@ export type {
   workspace_departmentCreationAttributes,
   workspace_designationAttributes,
   workspace_designationCreationAttributes,
+  workspace_shiftAttributes,
+  workspace_shiftCreationAttributes,
   workspaceAttributes,
   workspaceCreationAttributes,
 };
@@ -78,6 +83,7 @@ export function initModels(sequelize: Sequelize) {
   const user = _user.initModel(sequelize);
   const workspace_department = _workspace_department.initModel(sequelize);
   const workspace_designation = _workspace_designation.initModel(sequelize);
+  const workspace_shift = _workspace_shift.initModel(sequelize);
   const workspace = _workspace.initModel(sequelize);
 
   user.belongsTo(master_user_role, { as: "role_master_user_role", foreignKey: "role"});
@@ -117,6 +123,7 @@ export function initModels(sequelize: Sequelize) {
     user: user,
     workspace_department: workspace_department,
     workspace_designation: workspace_designation,
+    workspace_shift: workspace_shift,
     workspace: workspace,
   };
 }

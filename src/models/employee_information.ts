@@ -112,7 +112,7 @@ export class employee_information extends Model<employee_informationAttributes, 
       }
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     gender: {
@@ -124,17 +124,17 @@ export class employee_information extends Model<employee_informationAttributes, 
       }
     },
     email: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true,
       unique: "employee_informations_email_key"
     },
     mobile_number: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true,
       unique: "employee_informations_mobile_number_key"
     },
     profile_pic: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     is_active: {

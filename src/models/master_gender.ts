@@ -45,11 +45,11 @@ export class master_gender extends Model<master_genderAttributes, master_genderC
       primaryKey: true
     },
     name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     description: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     is_active: {

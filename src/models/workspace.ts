@@ -7,6 +7,7 @@ import type { workspace_designation, workspace_designationId } from './workspace
 export interface workspaceAttributes {
   id: string;
   workspace_name?: string;
+  workspace_logo?: string;
   is_active?: boolean;
   is_deleted?: boolean;
   created_by?: string;
@@ -19,12 +20,13 @@ export interface workspaceAttributes {
 
 export type workspacePk = "id";
 export type workspaceId = workspace[workspacePk];
-export type workspaceOptionalAttributes = "workspace_name" | "is_active" | "is_deleted" | "created_by" | "created_at" | "updated_by" | "updated_at" | "deleted_by" | "deleted_at";
+export type workspaceOptionalAttributes = "workspace_name" | "workspace_logo" | "is_active" | "is_deleted" | "created_by" | "created_at" | "updated_by" | "updated_at" | "deleted_by" | "deleted_at";
 export type workspaceCreationAttributes = Optional<workspaceAttributes, workspaceOptionalAttributes>;
 
 export class workspace extends Model<workspaceAttributes, workspaceCreationAttributes> implements workspaceAttributes {
   id!: string;
   workspace_name?: string;
+  workspace_logo?: string;
   is_active?: boolean;
   is_deleted?: boolean;
   created_by?: string;
@@ -79,7 +81,11 @@ export class workspace extends Model<workspaceAttributes, workspaceCreationAttri
       primaryKey: true
     },
     workspace_name: {
-      type: DataTypes.STRING,
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    workspace_logo: {
+      type: DataTypes.STRING(255),
       allowNull: true
     },
     is_active: {

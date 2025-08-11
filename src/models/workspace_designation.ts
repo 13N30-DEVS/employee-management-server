@@ -8,15 +8,18 @@ export interface workspace_designationAttributes {
   workspace_id?: string;
   designation_id?: number;
   is_active?: boolean;
+  is_deleted?: boolean;
   created_by?: string;
   created_at?: Date;
   updated_by?: string;
   updated_at?: Date;
+  deleted_by?: string;
+  deleted_at?: Date;
 }
 
 export type workspace_designationPk = "id";
 export type workspace_designationId = workspace_designation[workspace_designationPk];
-export type workspace_designationOptionalAttributes = "workspace_id" | "designation_id" | "is_active" | "created_by" | "created_at" | "updated_by" | "updated_at";
+export type workspace_designationOptionalAttributes = "workspace_id" | "designation_id" | "is_active" | "is_deleted" | "created_by" | "created_at" | "updated_by" | "updated_at" | "deleted_by" | "deleted_at";
 export type workspace_designationCreationAttributes = Optional<workspace_designationAttributes, workspace_designationOptionalAttributes>;
 
 export class workspace_designation extends Model<workspace_designationAttributes, workspace_designationCreationAttributes> implements workspace_designationAttributes {
@@ -24,10 +27,13 @@ export class workspace_designation extends Model<workspace_designationAttributes
   workspace_id?: string;
   designation_id?: number;
   is_active?: boolean;
+  is_deleted?: boolean;
   created_by?: string;
   created_at?: Date;
   updated_by?: string;
   updated_at?: Date;
+  deleted_by?: string;
+  deleted_at?: Date;
 
   // workspace_designation belongsTo master_designation via designation_id
   designation!: master_designation;
@@ -68,6 +74,11 @@ export class workspace_designation extends Model<workspace_designationAttributes
       allowNull: true,
       defaultValue: true
     },
+    is_deleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false
+    },
     created_by: {
       type: DataTypes.UUID,
       allowNull: true
@@ -81,6 +92,14 @@ export class workspace_designation extends Model<workspace_designationAttributes
       allowNull: true
     },
     updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    deleted_by: {
+      type: DataTypes.UUID,
+      allowNull: true
+    },
+    deleted_at: {
       type: DataTypes.DATE,
       allowNull: true
     }
