@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { master_designation, master_designationId } from './master_designation';
+import type { user, userId } from './user';
 import type { workspace, workspaceId } from './workspace';
 
 export interface workspace_designationAttributes {
@@ -40,6 +41,21 @@ export class workspace_designation extends Model<workspace_designationAttributes
   getDesignation!: Sequelize.BelongsToGetAssociationMixin<master_designation>;
   setDesignation!: Sequelize.BelongsToSetAssociationMixin<master_designation, master_designationId>;
   createDesignation!: Sequelize.BelongsToCreateAssociationMixin<master_designation>;
+  // workspace_designation belongsTo user via created_by
+  created_by_user!: user;
+  getCreated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setCreated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createCreated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // workspace_designation belongsTo user via deleted_by
+  deleted_by_user!: user;
+  getDeleted_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setDeleted_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createDeleted_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // workspace_designation belongsTo user via updated_by
+  updated_by_user!: user;
+  getUpdated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUpdated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUpdated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
   // workspace_designation belongsTo workspace via workspace_id
   workspace!: workspace;
   getWorkspace!: Sequelize.BelongsToGetAssociationMixin<workspace>;
@@ -81,7 +97,11 @@ export class workspace_designation extends Model<workspace_designationAttributes
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -89,7 +109,11 @@ export class workspace_designation extends Model<workspace_designationAttributes
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     updated_at: {
       type: DataTypes.DATE,
@@ -97,7 +121,11 @@ export class workspace_designation extends Model<workspace_designationAttributes
     },
     deleted_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     deleted_at: {
       type: DataTypes.DATE,

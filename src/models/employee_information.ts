@@ -77,6 +77,21 @@ export class employee_information extends Model<employee_informationAttributes, 
   getGender_master_gender!: Sequelize.BelongsToGetAssociationMixin<master_gender>;
   setGender_master_gender!: Sequelize.BelongsToSetAssociationMixin<master_gender, master_genderId>;
   createGender_master_gender!: Sequelize.BelongsToCreateAssociationMixin<master_gender>;
+  // employee_information belongsTo user via created_by
+  created_by_user!: user;
+  getCreated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setCreated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createCreated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // employee_information belongsTo user via deleted_by
+  deleted_by_user!: user;
+  getDeleted_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setDeleted_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createDeleted_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // employee_information belongsTo user via updated_by
+  updated_by_user!: user;
+  getUpdated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUpdated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUpdated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
   // employee_information belongsTo user via user_id
   user!: user;
   getUser!: Sequelize.BelongsToGetAssociationMixin<user>;
@@ -149,7 +164,11 @@ export class employee_information extends Model<employee_informationAttributes, 
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -157,7 +176,11 @@ export class employee_information extends Model<employee_informationAttributes, 
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     updated_at: {
       type: DataTypes.DATE,
@@ -165,7 +188,11 @@ export class employee_information extends Model<employee_informationAttributes, 
     },
     deleted_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     deleted_at: {
       type: DataTypes.DATE,

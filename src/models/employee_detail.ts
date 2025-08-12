@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { employee_information, employee_informationId } from './employee_information';
+import type { user, userId } from './user';
 
 export interface employee_detailAttributes {
   id: string;
@@ -41,6 +42,21 @@ export class employee_detail extends Model<employee_detailAttributes, employee_d
   getEmp!: Sequelize.BelongsToGetAssociationMixin<employee_information>;
   setEmp!: Sequelize.BelongsToSetAssociationMixin<employee_information, employee_informationId>;
   createEmp!: Sequelize.BelongsToCreateAssociationMixin<employee_information>;
+  // employee_detail belongsTo user via created_by
+  created_by_user!: user;
+  getCreated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setCreated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createCreated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // employee_detail belongsTo user via deleted_by
+  deleted_by_user!: user;
+  getDeleted_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setDeleted_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createDeleted_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // employee_detail belongsTo user via updated_by
+  updated_by_user!: user;
+  getUpdated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUpdated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUpdated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof employee_detail {
     return employee_detail.init({
@@ -77,7 +93,11 @@ export class employee_detail extends Model<employee_detailAttributes, employee_d
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -85,7 +105,11 @@ export class employee_detail extends Model<employee_detailAttributes, employee_d
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     updated_at: {
       type: DataTypes.DATE,
@@ -93,7 +117,11 @@ export class employee_detail extends Model<employee_detailAttributes, employee_d
     },
     deleted_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     deleted_at: {
       type: DataTypes.DATE,

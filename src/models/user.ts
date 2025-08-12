@@ -43,6 +43,16 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
   getStatus_master_user_status!: Sequelize.BelongsToGetAssociationMixin<master_user_status>;
   setStatus_master_user_status!: Sequelize.BelongsToSetAssociationMixin<master_user_status, master_user_statusId>;
   createStatus_master_user_status!: Sequelize.BelongsToCreateAssociationMixin<master_user_status>;
+  // user belongsTo user via created_by
+  created_by_user!: user;
+  getCreated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setCreated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createCreated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // user belongsTo user via updated_by
+  updated_by_user!: user;
+  getUpdated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUpdated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUpdated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof user {
     return user.init({
@@ -82,7 +92,11 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -90,7 +104,11 @@ export class user extends Model<userAttributes, userCreationAttributes> implemen
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     updated_at: {
       type: DataTypes.DATE,

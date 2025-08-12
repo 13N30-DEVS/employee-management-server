@@ -1,6 +1,7 @@
 import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { employee_information, employee_informationId } from './employee_information';
+import type { user, userId } from './user';
 import type { workspace_department, workspace_departmentId } from './workspace_department';
 import type { workspace_designation, workspace_designationId } from './workspace_designation';
 
@@ -36,6 +37,21 @@ export class workspace extends Model<workspaceAttributes, workspaceCreationAttri
   deleted_by?: string;
   deleted_at?: Date;
 
+  // workspace belongsTo user via created_by
+  created_by_user!: user;
+  getCreated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setCreated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createCreated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // workspace belongsTo user via deleted_by
+  deleted_by_user!: user;
+  getDeleted_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setDeleted_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createDeleted_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // workspace belongsTo user via updated_by
+  updated_by_user!: user;
+  getUpdated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUpdated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUpdated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
   // workspace hasMany employee_information via workspace_id
   employee_informations!: employee_information[];
   getEmployee_informations!: Sequelize.HasManyGetAssociationsMixin<employee_information>;
@@ -100,7 +116,11 @@ export class workspace extends Model<workspaceAttributes, workspaceCreationAttri
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -108,7 +128,11 @@ export class workspace extends Model<workspaceAttributes, workspaceCreationAttri
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     updated_at: {
       type: DataTypes.DATE,
@@ -116,7 +140,11 @@ export class workspace extends Model<workspaceAttributes, workspaceCreationAttri
     },
     deleted_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     deleted_at: {
       type: DataTypes.DATE,

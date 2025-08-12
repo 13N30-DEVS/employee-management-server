@@ -2,6 +2,7 @@ import * as Sequelize from 'sequelize';
 import { DataTypes, Model, Optional } from 'sequelize';
 import type { employee_information, employee_informationId } from './employee_information';
 import type { master_user_role, master_user_roleId } from './master_user_role';
+import type { user, userId } from './user';
 
 export interface employee_role_mappingAttributes {
   id: string;
@@ -45,6 +46,21 @@ export class employee_role_mapping extends Model<employee_role_mappingAttributes
   getRole!: Sequelize.BelongsToGetAssociationMixin<master_user_role>;
   setRole!: Sequelize.BelongsToSetAssociationMixin<master_user_role, master_user_roleId>;
   createRole!: Sequelize.BelongsToCreateAssociationMixin<master_user_role>;
+  // employee_role_mapping belongsTo user via created_by
+  created_by_user!: user;
+  getCreated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setCreated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createCreated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // employee_role_mapping belongsTo user via deleted_by
+  deleted_by_user!: user;
+  getDeleted_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setDeleted_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createDeleted_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
+  // employee_role_mapping belongsTo user via updated_by
+  updated_by_user!: user;
+  getUpdated_by_user!: Sequelize.BelongsToGetAssociationMixin<user>;
+  setUpdated_by_user!: Sequelize.BelongsToSetAssociationMixin<user, userId>;
+  createUpdated_by_user!: Sequelize.BelongsToCreateAssociationMixin<user>;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof employee_role_mapping {
     return employee_role_mapping.init({
@@ -81,7 +97,11 @@ export class employee_role_mapping extends Model<employee_role_mappingAttributes
     },
     created_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     created_at: {
       type: DataTypes.DATE,
@@ -89,7 +109,11 @@ export class employee_role_mapping extends Model<employee_role_mappingAttributes
     },
     updated_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     updated_at: {
       type: DataTypes.DATE,
@@ -97,7 +121,11 @@ export class employee_role_mapping extends Model<employee_role_mappingAttributes
     },
     deleted_by: {
       type: DataTypes.UUID,
-      allowNull: true
+      allowNull: true,
+      references: {
+        model: 'users',
+        key: 'id'
+      }
     },
     deleted_at: {
       type: DataTypes.DATE,
