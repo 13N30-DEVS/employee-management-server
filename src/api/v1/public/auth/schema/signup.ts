@@ -14,10 +14,9 @@ const signUpBody = Schema.object()
     "role",
     Schema.number()
       .minimum(1)
-      .maximum(4)
       .required()
       .description(
-        "Role ID must be 1 (Super Admin), 2 (Admin), 3 (HR), or 4 (Employee)"
+        "Role ID must be a valid role ID (1: Super Admin, 2: Admin, 3: HR, 4: Employee, etc.)"
       )
   )
   .prop("departments", Schema.array().items(Schema.number()).required())

@@ -10,7 +10,7 @@ export const masterGenders: {
     {
       id: 1,
       name: "Male",
-      description: "",
+      description: "Identifies as male",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -18,7 +18,7 @@ export const masterGenders: {
     {
       id: 2,
       name: "Female",
-      description: "",
+      description: "Identifies as female",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -26,7 +26,7 @@ export const masterGenders: {
     {
       id: 3,
       name: "Transgender",
-      description: "",
+      description: "Identifies as transgender",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -34,7 +34,8 @@ export const masterGenders: {
     {
       id: 4,
       name: "Others",
-      description: "",
+      description:
+        "Identifies with other gender identities or prefers not to specify",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),

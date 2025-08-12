@@ -142,14 +142,10 @@ function handleResponse(
   reply.code(statusInfo.code).header("Content-Type", headers);
   if (isErrorResponse) {
     return reply.send({
-      error: {
-        isError: true,
-        origin: request.url,
-        timestamp: new Date(),
-        message: customMessage,
-        data,
-        ...error,
-      },
+      isError: true,
+      message: customMessage || error.message || statusInfo.description,
+      origin: request.url,
+      timestamp: new Date(),
     });
   } else {
     if (data?.buffer) {

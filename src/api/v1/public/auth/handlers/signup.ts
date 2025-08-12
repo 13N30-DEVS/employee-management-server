@@ -73,20 +73,6 @@ export async function SIGN_UP(
     } else {
       // Handle foreign key constraint violations and other database errors
       let errorMessage = "Internal Server Error";
-      if (error.message?.includes("foreign key constraint")) {
-        if (error.message.includes("users_role_fkey")) {
-          errorMessage =
-            "Invalid role ID. Please use a valid role (1: Super Admin, 2: Admin, 3: HR, 4: Employee)";
-        } else if (error.message.includes("departments")) {
-          errorMessage =
-            "Invalid department ID(s). Please use valid department IDs";
-        } else if (error.message.includes("designations")) {
-          errorMessage =
-            "Invalid designation ID(s). Please use valid designation IDs";
-        } else {
-          errorMessage = "Invalid reference data provided";
-        }
-      }
 
       return handleResponse(
         request,

@@ -50,32 +50,38 @@ export const makeResponseSchema = (
     "200": response,
     "400": Schema.object()
       .description("Bad Request")
-      .prop("error", Schema.boolean())
+      .prop("isError", Schema.boolean())
       .prop("message", Schema.string())
+      .prop("origin", Schema.string())
+      .prop("timestamp", Schema.string())
       .valueOf() as JSONSchema,
     "401": Schema.object()
       .description("Un Authorized response")
-      .prop("error", Schema.boolean())
+      .prop("isError", Schema.boolean())
       .prop("message", Schema.string())
-      .additionalProperties(true)
+      .prop("origin", Schema.string())
+      .prop("timestamp", Schema.string())
       .valueOf() as JSONSchema,
     "409": Schema.object()
       .description("Error Response")
-      .prop("error", Schema.boolean())
+      .prop("isError", Schema.boolean())
       .prop("message", Schema.string())
-      .additionalProperties(true)
+      .prop("origin", Schema.string())
+      .prop("timestamp", Schema.string())
       .valueOf() as JSONSchema,
     "422": Schema.object()
       .description("Validation Error Response")
-      .prop("error", Schema.boolean())
+      .prop("isError", Schema.boolean())
       .prop("message", Schema.string())
-      .additionalProperties(true)
+      .prop("origin", Schema.string())
+      .prop("timestamp", Schema.string())
       .valueOf() as JSONSchema,
     "500": Schema.object()
       .description("Internal Server Error Response")
-      .prop("error", Schema.boolean())
+      .prop("isError", Schema.boolean())
       .prop("message", Schema.string())
-      .additionalProperties(true)
+      .prop("origin", Schema.string())
+      .prop("timestamp", Schema.string())
       .valueOf() as JSONSchema,
   };
   return responseType;

@@ -10,7 +10,7 @@ export const masterUserStatuses: {
     {
       id: 1,
       name: "Active",
-      description: "",
+      description: "User account is active and can access the system",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -18,7 +18,8 @@ export const masterUserStatuses: {
     {
       id: 2,
       name: "In Active",
-      description: "",
+      description:
+        "User account is temporarily inactive and cannot access the system",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -26,7 +27,8 @@ export const masterUserStatuses: {
     {
       id: 3,
       name: "Blocked",
-      description: "",
+      description:
+        "User account is blocked due to security violations or policy breaches",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
@@ -34,7 +36,8 @@ export const masterUserStatuses: {
     {
       id: 4,
       name: "Deleted",
-      description: "",
+      description:
+        "User account has been soft deleted and is no longer accessible",
       is_active: true,
       created_at: new Date(),
       updated_at: new Date(),
