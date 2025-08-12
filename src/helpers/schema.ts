@@ -65,6 +65,12 @@ export const makeResponseSchema = (
       .prop("message", Schema.string())
       .additionalProperties(true)
       .valueOf() as JSONSchema,
+    "422": Schema.object()
+      .description("Validation Error Response")
+      .prop("error", Schema.boolean())
+      .prop("message", Schema.string())
+      .additionalProperties(true)
+      .valueOf() as JSONSchema,
     "500": Schema.object()
       .description("Internal Server Error Response")
       .prop("error", Schema.boolean())

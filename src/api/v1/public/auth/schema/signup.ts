@@ -10,7 +10,16 @@ const signUpBody = Schema.object()
   .prop("adminName", Schema.string().required())
   .prop("workspaceLogo", Schema.string().required())
   .prop("password", Schema.string().required())
-  .prop("role", Schema.number().required())
+  .prop(
+    "role",
+    Schema.number()
+      .minimum(1)
+      .maximum(4)
+      .required()
+      .description(
+        "Role ID must be 1 (Super Admin), 2 (Admin), 3 (HR), or 4 (Employee)"
+      )
+  )
   .prop("departments", Schema.array().items(Schema.number()).required())
   .prop("designations", Schema.array().items(Schema.number()).required())
   .prop(

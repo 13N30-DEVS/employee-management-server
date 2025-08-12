@@ -40,30 +40,60 @@ export async function SIGN_UP(
     console.log("error:", error);
     Logger.error(request, error.message, error);
 
-    // If error contains a statusCode, use it. Otherwise, return a generic internal error.
-    if (error?.statusCode === 401) {
+    // Handle specific error types with proper error responses
+    if (error?.statusCode === 400) {
+      return handleResponse(request, reply, responseType?.BAD_REQUEST, {
+        error: { message: error.message || "Bad Request" },
+      });
+    } else if (error?.statusCode === 401) {
       return handleResponse(request, reply, responseType?.UNAUTHORIZED, {
-        error: { message: error.message },
+        error: { message: error.message || "Unauthorized" },
       });
     } else if (error?.statusCode === 403) {
       return handleResponse(request, reply, responseType?.FORBIDDEN, {
-        error: { message: error.message },
+        error: { message: error.message || "Forbidden" },
       });
     } else if (error?.statusCode === 404) {
       return handleResponse(request, reply, responseType?.NOT_FOUND, {
-        error: { message: error.message },
+        error: { message: error.message || "Not Found" },
       });
     } else if (error?.statusCode === 409) {
       return handleResponse(request, reply, responseType?.CONFLICT, {
-        error: { message: error.message },
+        error: { message: error.message || "Conflict" },
       });
+    } else if (error?.statusCode === 422) {
+      return handleResponse(
+        request,
+        reply,
+        responseType?.UNPROCESSABLE_ENTITY,
+        {
+          error: { message: error.message || "Validation Error" },
+        }
+      );
     } else {
+      // Handle foreign key constraint violations and other database errors
+      let errorMessage = "Internal Server Error";
+      if (error.message?.includes("foreign key constraint")) {
+        if (error.message.includes("users_role_fkey")) {
+          errorMessage =
+            "Invalid role ID. Please use a valid role (1: Super Admin, 2: Admin, 3: HR, 4: Employee)";
+        } else if (error.message.includes("departments")) {
+          errorMessage =
+            "Invalid department ID(s). Please use valid department IDs";
+        } else if (error.message.includes("designations")) {
+          errorMessage =
+            "Invalid designation ID(s). Please use valid designation IDs";
+        } else {
+          errorMessage = "Invalid reference data provided";
+        }
+      }
+
       return handleResponse(
         request,
         reply,
         responseType?.INTERNAL_SERVER_ERROR,
         {
-          error: { message: "Internal Server Error" },
+          error: { message: errorMessage },
         }
       );
     }
