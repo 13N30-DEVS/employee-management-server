@@ -13,7 +13,9 @@
       "@serializers": ["serializers/index"],
       "@utils": ["utils/index"],
       "@models": ["models/init-models"],
-      "@queries": ["queries/index"]
+      "@queries": ["queries/index"],
+      "@types": ["types/fastify"],
+      "@schemas": ["schemas/index"]
     },
     "sourceMap": true,
     "types": ["dotenv"]

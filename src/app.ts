@@ -4,6 +4,7 @@ import { cpus } from "os";
 import { join } from "path";
 import v1 from "./api/v1";
 import { commonHeaders, commonQuerys } from "./helpers";
+import { globalErrorHandler } from "./helpers/errorHandler";
 
 process.env.UV_THREADPOOL_SIZE = String(cpus().length);
 
@@ -26,6 +27,9 @@ const app: FastifyPluginAsync<AppOptions> = async (
 
   fastify.addSchema(commonHeaders);
   fastify.addSchema(commonQuerys);
+
+  // Register global error handler
+  fastify.setErrorHandler(globalErrorHandler);
 
   fastify.register(AutoLoad, {
     dir: join(__dirname, "plugins"),

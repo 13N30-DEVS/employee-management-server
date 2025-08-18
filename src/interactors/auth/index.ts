@@ -1,30 +1,15 @@
-import { Logger } from "@helpers";
 import { Auth } from "@services";
 import * as bcrypt from "bcrypt";
 import { sequelize } from "@utils";
 import { v4 as uuidv4 } from "uuid";
-
-interface SignInPayload {
-  emailId: string;
-  password: string;
-}
-
-interface SignUpPayload {
-  emailId: string;
-  workspaceName: string;
-  adminName: string;
-  workspaceLogo: string;
-  password: string;
-  role: number;
-  departments: number[];
-  designations: number[];
-  shifts: {
-    name: string;
-    description?: string;
-    startTime: string;
-    endTime: string;
-  }[];
-}
+import { LoginInput, SignupInput } from "@schemas";
+import { AuthenticatedFastifyInstance } from "@types";
+import {
+  AppError,
+  NotFoundError,
+  AuthenticationError,
+  ConflictError,
+} from "@helpers";
 
 // Return type interfaces
 interface WorkspaceResponse {
@@ -52,52 +37,45 @@ interface SignUpResponse {
  * @throws {Error} If the user does not exist or the password is incorrect. The error will have a statusCode property set to 404 or 403, respectively.
  */
 export const SignIn = async (
-  options: SignInPayload,
-  fastify: any
+  options: LoginInput,
+  fastify: AuthenticatedFastifyInstance
 ): Promise<{ token: string }> => {
-  try {
-    const { emailId, password } = options;
+  const { emailId, password } = options;
 
-    const user = await Auth.findByEmailId({ emailId });
+  const user = await Auth.findByEmailId({ emailId });
 
-    if (!user) {
-      const error: any = new Error("User does not exist.");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    if (!user.password_hash) {
-      const error: any = new Error("User password hash not found.");
-      error.statusCode = 500;
-      throw error;
-    }
-
-    const passwordMatch = bcrypt.compareSync(password, user.password_hash);
-
-    if (!passwordMatch) {
-      const error: any = new Error("Incorrect password.");
-      error.statusCode = 403;
-      throw error;
-    }
-
-    // Authentication Token
-    const authToken: string = fastify.jwt.sign({
-      userId: user.id,
-      roleId: user.role_master_user_role?.id,
-      roleName: user.role_master_user_role?.name,
-      statusId: user.status_master_user_status?.id,
-      statusName: user.status_master_user_status?.name,
-      workspaceId: user.employee_informations?.[0]?.workspace?.id,
-      workspaceName:
-        user.employee_informations?.[0]?.workspace?.workspace_name ??
-        "Unknown Workspace",
-    });
-
-    return { token: authToken };
-  } catch (error: any) {
-    Logger.error(error.message, error);
-    throw error; // Don't wrap it in a new Error, pass original error with statusCode
+  if (!user) {
+    throw new NotFoundError("User does not exist.");
   }
+
+  if (!user.password_hash) {
+    throw new AppError(
+      500,
+      "User password hash not found.",
+      "PASSWORD_HASH_MISSING"
+    );
+  }
+
+  const passwordMatch = bcrypt.compareSync(password, user.password_hash);
+
+  if (!passwordMatch) {
+    throw new AuthenticationError("Incorrect password.");
+  }
+
+  // Authentication Token
+  const authToken: string = fastify.generateAccessToken({
+    userId: user.id,
+    roleId: user.role_master_user_role?.id || 0,
+    roleName: user.role_master_user_role?.name,
+    statusId: user.status_master_user_status?.id || 0,
+    statusName: user.status_master_user_status?.name,
+    workspaceId: user.employee_informations?.[0]?.workspace?.id || "",
+    workspaceName:
+      user.employee_informations?.[0]?.workspace?.workspace_name ??
+      "Unknown Workspace",
+  });
+
+  return { token: authToken };
 };
 
 /**
@@ -108,8 +86,8 @@ export const SignIn = async (
  * @throws {Error} If the user already exists or any database operation fails.
  */
 export const SignUp = async (
-  options: SignUpPayload,
-  fastify: any
+  options: SignupInput,
+  fastify: AuthenticatedFastifyInstance
 ): Promise<SignUpResponse> => {
   const transaction = await sequelize.transaction();
 
@@ -129,9 +107,7 @@ export const SignUp = async (
     // Check if user already exists
     const existingUser = await Auth.findByEmailId({ emailId });
     if (existingUser) {
-      const error: any = new Error("User with this email already exists.");
-      error.statusCode = 409;
-      throw error;
+      throw new ConflictError("User with this email already exists.");
     }
 
     // Hash password
@@ -157,7 +133,7 @@ export const SignUp = async (
       {
         id: workspaceId,
         workspaceName,
-        workspaceLogo,
+        workspaceLogo: workspaceLogo || "",
         createdBy: userId,
         updatedBy: userId,
       },
@@ -228,7 +204,7 @@ export const SignUp = async (
     await transaction.commit();
 
     // Generate authentication token
-    const authToken: string = fastify.jwt.sign({
+    const authToken: string = fastify.generateAccessToken({
       userId: user.id,
       roleId: role,
       workspaceId: workspace.id,
@@ -250,10 +226,13 @@ export const SignUp = async (
     };
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Rollback transaction on error
     await transaction.rollback();
-    Logger.error(error.message, error);
+    console.error(
+      error instanceof Error ? error.message : "Unknown error",
+      error
+    );
     throw error;
   }
 };

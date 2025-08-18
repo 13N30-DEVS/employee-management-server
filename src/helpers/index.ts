@@ -10,3 +10,4 @@ export * from "./s3Bucket";
 export * from "./schema";
 export * from "./streamBuffer";
 export * from "./redisCache";
+export * from "./errorHandler";

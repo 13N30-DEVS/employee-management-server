@@ -3,6 +3,17 @@ import { env } from "@config";
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
+// JWT Payload interface
+interface JwtPayload {
+  userId: string;
+  roleId: number;
+  roleName?: string;
+  statusId?: number;
+  statusName?: string;
+  workspaceId: string;
+  workspaceName: string;
+}
+
 /* Plug in function for JWT Authentication */
 export default fp(async (fastify: FastifyInstance) => {
   // Validate JWT secret
@@ -28,14 +39,15 @@ export default fp(async (fastify: FastifyInstance) => {
     ): Promise<void> {
       try {
         await request.jwtVerify();
-      } catch (err: any) {
-        if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
+      } catch (err: unknown) {
+        const error = err as any;
+        if (error.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
           reply.code(401).send({
             error: "Token expired",
             code: "TOKEN_EXPIRED",
             message: "Authentication token has expired",
           });
-        } else if (err.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID") {
+        } else if (error.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID") {
           reply.code(401).send({
             error: "Invalid token",
             code: "INVALID_TOKEN",
@@ -53,18 +65,24 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // Decorate refresh token method
-  fastify.decorate("generateRefreshToken", function (payload: any): string {
-    return fastify.jwt.sign(payload, {
-      expiresIn: env.JWT_REFRESH_EXPIRES_IN,
-    });
-  });
+  fastify.decorate(
+    "generateRefreshToken",
+    function (payload: JwtPayload): string {
+      return fastify.jwt.sign(payload, {
+        expiresIn: env.JWT_REFRESH_EXPIRES_IN,
+      });
+    }
+  );
 
   // Decorate access token method
-  fastify.decorate("generateAccessToken", function (payload: any): string {
-    return fastify.jwt.sign(payload, {
-      expiresIn: env.JWT_EXPIRES_IN,
-    });
-  });
+  fastify.decorate(
+    "generateAccessToken",
+    function (payload: JwtPayload): string {
+      return fastify.jwt.sign(payload, {
+        expiresIn: env.JWT_EXPIRES_IN,
+      });
+    }
+  );
 });
 
 // Extend FastifyInstance interface
@@ -74,7 +92,7 @@ declare module "fastify" {
       request: FastifyRequest,
       reply: FastifyReply
     ) => Promise<void>;
-    generateRefreshToken: (payload: any) => string;
-    generateAccessToken: (payload: any) => string;
+    generateRefreshToken: (payload: JwtPayload) => string;
+    generateAccessToken: (payload: JwtPayload) => string;
   }
 }
