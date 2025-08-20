@@ -1,12 +1,12 @@
-import { FastifyRequest } from "fastify";
-import { redisService, CacheOptions } from "../services/redis";
-import { Logger } from "./logger";
+import { FastifyRequest } from 'fastify';
+import { redisService, CacheOptions } from '../services/redis';
+import { Logger } from './logger';
 
 export interface CacheDecoratorOptions extends CacheOptions {
   key?: string | ((request: FastifyRequest) => string);
   condition?: (request: FastifyRequest) => boolean;
-  onHit?: (data: any, request: FastifyRequest) => void;
-  onMiss?: (request: FastifyRequest) => void;
+  onHit?: (_data: any, _request: FastifyRequest) => void;
+  onMiss?: (_request: FastifyRequest) => void;
 }
 
 export interface CachePatterns {
@@ -21,22 +21,38 @@ export interface CachePatterns {
   data: {
     departments: () => string;
     designations: () => string;
-    employees: (filters?: string) => string;
-    reports: (type: string, date: string) => string;
+    employees: (_filters?: string) => string;
+    reports: (_type: string, _date: string) => string;
   };
 
   // Session cache
   session: {
-    user: (sessionId: string) => string;
-    tokens: (userId: string) => string;
+    user: (_sessionId: string) => string;
+    tokens: (_userId: string) => string;
   };
 
   // API cache
   api: {
-    response: (endpoint: string, params?: string) => string;
-    rateLimit: (ip: string, endpoint: string) => string;
+    response: (_endpoint: string, _params?: string) => string;
+    rateLimit: (_ip: string, _endpoint: string) => string;
   };
 }
+
+// Create a mock request object for logging when no request is available
+const createMockRequest = () =>
+  ({
+    id: 'system',
+    url: '/system',
+    method: 'SYSTEM',
+    ip: '127.0.0.1',
+    hostname: 'localhost',
+    protocol: 'http',
+    headers: { 'user-agent': 'system' },
+    query: {},
+    params: {},
+    body: null,
+    user: undefined,
+  }) as any;
 
 export class RedisCacheHelper {
   private static readonly cachePatterns: CachePatterns = {
@@ -47,9 +63,9 @@ export class RedisCacheHelper {
     },
 
     data: {
-      departments: () => "data:departments:all",
-      designations: () => "data:designations:all",
-      employees: (filters?: string) => `data:employees:${filters || "all"}`,
+      departments: () => 'data:departments:all',
+      designations: () => 'data:designations:all',
+      employees: (filters?: string) => `data:employees:${filters || 'all'}`,
       reports: (type: string, date: string) => `data:reports:${type}:${date}`,
     },
 
@@ -60,9 +76,8 @@ export class RedisCacheHelper {
 
     api: {
       response: (endpoint: string, params?: string) =>
-        `api:response:${endpoint}:${params || "default"}`,
-      rateLimit: (ip: string, endpoint: string) =>
-        `ratelimit:${ip}:${endpoint}`,
+        `api:response:${endpoint}:${params || 'default'}`,
+      rateLimit: (ip: string, endpoint: string) => `ratelimit:${ip}:${endpoint}`,
     },
   };
 
@@ -77,29 +92,20 @@ export class RedisCacheHelper {
    * Cache decorator for methods
    */
   static cache(options: CacheDecoratorOptions = {}) {
-    return function (
-      target: any,
-      propertyKey: string,
-      descriptor: PropertyDescriptor
-    ) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
       const originalMethod = descriptor.value;
 
       descriptor.value = async function (...args: any[]) {
-        const request = args.find(
-          (arg) => arg && typeof arg === "object" && arg.url
-        );
+        const request = args.find(arg => arg && typeof arg === 'object' && arg.url);
 
         if (!request || (options.condition && !options.condition(request))) {
           return originalMethod.apply(this, args);
         }
 
         const cacheKey =
-          typeof options.key === "function"
+          typeof options.key === 'function'
             ? options.key(request)
-            : options.key ||
-              `${target.constructor.name}:${propertyKey}:${JSON.stringify(
-                args
-              )}`;
+            : options.key || `${target.constructor.name}:${propertyKey}:${JSON.stringify(args)}`;
 
         try {
           // Try to get from cache
@@ -128,11 +134,7 @@ export class RedisCacheHelper {
 
           return result;
         } catch (error) {
-          Logger.error(
-            request,
-            `Cache operation failed for ${cacheKey}`,
-            error
-          );
+          Logger.error(request, `Cache operation failed for ${cacheKey}`, error);
           // Fallback to original method
           return originalMethod.apply(this, args);
         }
@@ -143,14 +145,22 @@ export class RedisCacheHelper {
   }
 
   /**
-   * Invalidate cache by pattern
+   * Invalidate cache by pattern using available Redis methods
    */
   static async invalidatePattern(pattern: string): Promise<number> {
     try {
-      // This is a simplified implementation - in production you might want to use SCAN
-      return 0;
+      // Use the available invalidateByNamespace method for pattern invalidation
+      // This is a simplified approach - in production you might want to implement SCAN
+      const namespace = pattern.replace('*', '').replace(/:$/, '');
+      if (namespace) {
+        return await redisService.invalidateByNamespace(namespace);
+      }
+
+      // Fallback to clearing all cache if no namespace pattern
+      const result = await redisService.clear();
+      return result ? 1 : 0;
     } catch (error) {
-      console.error(`Failed to invalidate pattern: ${pattern}`, error);
+      Logger.error(createMockRequest(), `Failed to invalidate pattern: ${pattern}`, error);
       return 0;
     }
   }
@@ -171,9 +181,9 @@ export class RedisCacheHelper {
         await redisService.delete(pattern);
       }
 
-      console.log(`Invalidated cache for user: ${userId}`);
+      Logger.info(createMockRequest(), `Invalidated cache for user: ${userId}`);
     } catch (error) {
-      console.error(`Failed to invalidate user cache: ${userId}`, error);
+      Logger.error(createMockRequest(), `Failed to invalidate user cache: ${userId}`, error);
     }
   }
 
@@ -182,24 +192,24 @@ export class RedisCacheHelper {
    */
   static async invalidateDataCache(type?: string): Promise<void> {
     try {
-      if (type === "departments") {
+      if (type === 'departments') {
         await redisService.delete(this.cachePatterns.data.departments());
-      } else if (type === "designations") {
+      } else if (type === 'designations') {
         await redisService.delete(this.cachePatterns.data.designations());
-      } else if (type === "employees") {
+      } else if (type === 'employees') {
         // Invalidate all employee caches
-        await redisService.invalidateByNamespace("data:employees");
-      } else if (type === "reports") {
+        await this.invalidatePattern('data:employees');
+      } else if (type === 'reports') {
         // Invalidate all report caches
-        await redisService.invalidateByNamespace("data:reports");
+        await this.invalidatePattern('data:reports');
       } else {
         // Invalidate all data caches
-        await redisService.invalidateByNamespace("data");
+        await this.invalidatePattern('data');
       }
 
-      console.log(`Invalidated data cache: ${type || "all"}`);
+      Logger.info(createMockRequest(), `Invalidated data cache: ${type || 'all'}`);
     } catch (error) {
-      console.error(`Failed to invalidate data cache: ${type}`, error);
+      Logger.error(createMockRequest(), `Failed to invalidate data cache: ${type}`, error);
     }
   }
 
@@ -208,14 +218,16 @@ export class RedisCacheHelper {
    */
   static async warmupCache(): Promise<void> {
     try {
-      console.log("Starting cache warmup...");
+      Logger.info(createMockRequest(), 'Starting cache warmup...');
 
       // Add your warmup logic here
       // Example: Pre-load departments, designations, etc.
+      // await this.warmupDepartments();
+      // await this.warmupDesignations();
 
-      console.log("Cache warmup completed");
+      Logger.info(createMockRequest(), 'Cache warmup completed');
     } catch (error) {
-      console.error("Cache warmup failed", error);
+      Logger.error(createMockRequest(), 'Cache warmup failed', error);
     }
   }
 
@@ -226,7 +238,7 @@ export class RedisCacheHelper {
     try {
       return await redisService.getStats();
     } catch (error) {
-      console.error("Failed to get cache stats", error);
+      Logger.error(createMockRequest(), 'Failed to get cache stats', error);
       return null;
     }
   }
@@ -238,8 +250,20 @@ export class RedisCacheHelper {
     try {
       return await redisService.isHealthy();
     } catch (error) {
-      console.error("Cache health check failed", error);
+      Logger.error(createMockRequest(), 'Cache health check failed', error);
       return false;
+    }
+  }
+
+  /**
+   * Clear all cache (use with caution)
+   */
+  static async clearAll(): Promise<void> {
+    try {
+      await redisService.clear();
+      Logger.info(createMockRequest(), 'All cache cleared');
+    } catch (error) {
+      Logger.error(createMockRequest(), 'Failed to clear all cache', error);
     }
   }
 }
@@ -247,10 +271,9 @@ export class RedisCacheHelper {
 // Export commonly used patterns
 export const cachePatterns = RedisCacheHelper.patterns;
 export const cacheDecorator = RedisCacheHelper.cache;
-export const invalidateUserCache =
-  RedisCacheHelper.invalidateUserCache.bind(RedisCacheHelper);
-export const invalidateDataCache =
-  RedisCacheHelper.invalidateDataCache.bind(RedisCacheHelper);
+export const invalidateUserCache = RedisCacheHelper.invalidateUserCache.bind(RedisCacheHelper);
+export const invalidateDataCache = RedisCacheHelper.invalidateDataCache.bind(RedisCacheHelper);
 export const warmupCache = RedisCacheHelper.warmupCache.bind(RedisCacheHelper);
+export const clearAllCache = RedisCacheHelper.clearAll.bind(RedisCacheHelper);
 
 export default RedisCacheHelper;

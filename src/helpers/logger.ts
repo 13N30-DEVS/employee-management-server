@@ -1,11 +1,11 @@
-import { FastifyRequest } from "fastify";
-import { env } from "@config";
+import { FastifyRequest } from 'fastify';
+import { env } from '@config';
 
 enum Severity {
-  INFO = "INFO",
-  WARNING = "WARNING",
-  ERROR = "ERROR",
-  DEBUG = "DEBUG",
+  INFO = 'INFO',
+  WARNING = 'WARNING',
+  ERROR = 'ERROR',
+  DEBUG = 'DEBUG',
 }
 
 interface LogContext {
@@ -40,9 +40,9 @@ class Logger {
         logData.error = {
           name: error.name,
           message: error.message,
-          stack: env.NODE_ENV === "development" ? error.stack : undefined,
+          stack: env.NODE_ENV === 'development' ? error.stack : undefined,
         };
-      } else if (typeof error === "string") {
+      } else if (typeof error === 'string') {
         logData.error = { message: error };
       } else {
         logData.error = error;
@@ -50,7 +50,7 @@ class Logger {
     }
 
     // In production, use structured JSON logging
-    if (env.NODE_ENV === "production") {
+    if (env.NODE_ENV === 'production') {
       return JSON.stringify(logData);
     }
 
@@ -81,7 +81,7 @@ class Logger {
     if (error) {
       if (error instanceof Error) {
         logMessage += `\x1b[31m: ${error.message}\x1b[0m`;
-      } else if (typeof error === "string") {
+      } else if (typeof error === 'string') {
         logMessage += `\x1b[31m: ${error}\x1b[0m`;
       } else {
         logMessage += `\x1b[31m: ${JSON.stringify(error)}\x1b[0m`;
@@ -98,7 +98,7 @@ class Logger {
       requestId: request.id,
       userId: (request.user as any)?.id,
       ip: request.ip,
-      userAgent: request.headers["user-agent"],
+      userAgent: request.headers['user-agent'],
       method: request.method,
       url: request.url,
     };
@@ -113,15 +113,10 @@ class Logger {
     const logContext = {
       ...context,
       environment: env.NODE_ENV,
-      service: "ems-backend",
+      service: 'ems-backend',
     };
 
-    const formattedMessage = this.formatMessage(
-      severity,
-      message,
-      logContext,
-      error
-    );
+    const formattedMessage = this.formatMessage(severity, message, logContext, error);
 
     switch (severity) {
       case Severity.ERROR:
@@ -131,7 +126,7 @@ class Logger {
         console.warn(formattedMessage);
         break;
       case Severity.DEBUG:
-        if (env.NODE_ENV === "development") {
+        if (env.NODE_ENV === 'development') {
           console.debug(formattedMessage);
         }
         break;
@@ -146,33 +141,20 @@ class Logger {
     this.log(Severity.INFO, message, context);
   }
 
-  static warning(
-    request: FastifyRequest,
-    message: string,
-    module?: string
-  ): void {
+  static warning(request: FastifyRequest, message: string, module?: string): void {
     const context = this.extractContext(request);
     if (module) context.module = module;
     this.log(Severity.WARNING, message, context);
   }
 
-  static error(
-    request: FastifyRequest,
-    message: string,
-    error?: unknown,
-    module?: string
-  ): void {
+  static error(request: FastifyRequest, message: string, error?: unknown, module?: string): void {
     const context = this.extractContext(request);
     if (module) context.module = module;
     this.log(Severity.ERROR, message, context, error);
   }
 
-  static debug(
-    request: FastifyRequest,
-    message: string,
-    module?: string
-  ): void {
-    if (env.NODE_ENV === "development") {
+  static debug(request: FastifyRequest, message: string, module?: string): void {
+    if (env.NODE_ENV === 'development') {
       const context = this.extractContext(request);
       if (module) context.module = module;
       this.log(Severity.DEBUG, message, context);
@@ -190,20 +172,11 @@ class Logger {
     context.responseTime = duration;
     if (module) context.module = module;
 
-    this.log(
-      Severity.INFO,
-      `Performance: ${operation} completed in ${duration}ms`,
-      context
-    );
+    this.log(Severity.INFO, `Performance: ${operation} completed in ${duration}ms`, context);
   }
 
   // Security logging
-  static security(
-    request: FastifyRequest,
-    event: string,
-    details?: any,
-    module?: string
-  ): void {
+  static security(request: FastifyRequest, event: string, details?: any, module?: string): void {
     const context = this.extractContext(request);
     if (module) context.module = module;
 

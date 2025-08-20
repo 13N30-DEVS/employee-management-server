@@ -1,35 +1,35 @@
-import Schema, { JSONSchema } from "fluent-json-schema";
+import Schema, { JSONSchema } from 'fluent-json-schema';
 
-import { makeResponseSchema } from "@helpers";
+import { makeResponseSchema } from '@helpers';
 // BODY SCHEMA
 // ============================================================
 // Sign Up and Prevalidate Body Schema
 const signUpBody = Schema.object()
-  .prop("emailId", Schema.string().required())
-  .prop("workspaceName", Schema.string().required())
-  .prop("adminName", Schema.string().required())
-  .prop("workspaceLogo", Schema.string().required())
-  .prop("password", Schema.string().required())
+  .prop('emailId', Schema.string().required())
+  .prop('workspaceName', Schema.string().required())
+  .prop('adminName', Schema.string().required())
+  .prop('workspaceLogo', Schema.string().required())
+  .prop('password', Schema.string().required())
   .prop(
-    "role",
+    'role',
     Schema.number()
       .minimum(1)
       .required()
       .description(
-        "Role ID must be a valid role ID (1: Super Admin, 2: Admin, 3: HR, 4: Employee, etc.)"
+        'Role ID must be a valid role ID (1: Super Admin, 2: Admin, 3: HR, 4: Employee, etc.)'
       )
   )
-  .prop("departments", Schema.array().items(Schema.number()).required())
-  .prop("designations", Schema.array().items(Schema.number()).required())
+  .prop('departments', Schema.array().items(Schema.number()).required())
+  .prop('designations', Schema.array().items(Schema.number()).required())
   .prop(
-    "shifts",
+    'shifts',
     Schema.array()
       .items(
         Schema.object()
-          .prop("name", Schema.string().required())
-          .prop("description", Schema.string())
-          .prop("startTime", Schema.string().required())
-          .prop("endTime", Schema.string().required())
+          .prop('name', Schema.string().required())
+          .prop('description', Schema.string())
+          .prop('startTime', Schema.string().required())
+          .prop('endTime', Schema.string().required())
       )
       .required()
   )
@@ -39,27 +39,24 @@ const signUpBody = Schema.object()
 // ====================================================================
 // Response Schema of Sign Up
 const signUpResponse: JSONSchema = Schema.object()
-  .prop("token", Schema.string())
+  .prop('token', Schema.string())
   .prop(
-    "workspace",
+    'workspace',
     Schema.object()
-      .prop("id", Schema.string())
-      .prop("workspaceName", Schema.string())
-      .prop("workspaceLogo", Schema.string())
+      .prop('id', Schema.string())
+      .prop('workspaceName', Schema.string())
+      .prop('workspaceLogo', Schema.string())
   )
-  .prop(
-    "user",
-    Schema.object().prop("id", Schema.string()).prop("emailId", Schema.string())
-  )
-  .prop("meta", Schema.object().prop("message", Schema.string()))
+  .prop('user', Schema.object().prop('id', Schema.string()).prop('emailId', Schema.string()))
+  .prop('meta', Schema.object().prop('message', Schema.string()))
   .valueOf() as JSONSchema;
 
 // =========================================================
 // SIGN UP
 export const SIGN_UP = {
   description:
-    "The purpose of this schema is to define the structure and constraints for an API endpoint that creates a new workspace with admin user.",
-  tags: ["AUTH"],
+    'The purpose of this schema is to define the structure and constraints for an API endpoint that creates a new workspace with admin user.',
+  tags: ['AUTH'],
   body: signUpBody,
   response: makeResponseSchema(signUpResponse),
 };

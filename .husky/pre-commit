@@ -1,4 +1,9 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npx pretty-quick --staged
+echo "🔍 Running pre-commit checks..."
+echo "📝 Formatting staged files..."
+
+npm run pre-commit
+
+echo "✅ Pre-commit checks completed!"

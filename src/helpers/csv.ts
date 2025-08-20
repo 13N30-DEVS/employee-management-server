@@ -1,7 +1,7 @@
-import * as csvParser from "csv-parser";
-import * as csvWriter from "csv-write-stream";
-import * as async from "async";
-import { createWriteStream, createReadStream } from "fs";
+import * as csvParser from 'csv-parser';
+import * as csvWriter from 'csv-write-stream';
+import * as async from 'async';
+import { createWriteStream, createReadStream } from 'fs';
 
 /**
  * Reads a CSV file and returns its contents as an array of objects.
@@ -14,15 +14,15 @@ export const readCsv = (filePath: string): Promise<any[]> => {
     const response: any[] = [];
     createReadStream(filePath)
       .pipe(csvParser())
-      .on("data", (data) => {
+      .on('data', data => {
         // Do something with each row of data
         response.push(data);
       })
-      .on("end", () => {
+      .on('end', () => {
         // All rows have been read
         resolve(response);
       })
-      .on("error", (error) => {
+      .on('error', error => {
         console.log(error);
         reject(error);
       });
@@ -39,7 +39,7 @@ const WriteCSVHeader = (filePath: string): Promise<any> => {
   return new Promise((resolve, reject) => {
     try {
       const writer = csvWriter();
-      writer.pipe(createWriteStream(filePath, { flags: "a" }));
+      writer.pipe(createWriteStream(filePath, { flags: 'a' }));
 
       resolve(writer);
     } catch (err) {
@@ -65,7 +65,7 @@ const WriteRows = (writer: any, data: any[] | object): Promise<void> => {
           (item, callback) => {
             writer.write(item, callback);
           },
-          (err) => {
+          err => {
             if (err) {
               reject(err);
             } else {

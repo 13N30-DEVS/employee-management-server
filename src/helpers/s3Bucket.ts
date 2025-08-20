@@ -1,18 +1,18 @@
-import * as aws from "aws-sdk";
-import { env } from "@config";
-import { Logger } from "./logger";
+import * as aws from 'aws-sdk';
+import { env } from '@config';
+import { Logger } from './logger';
 
 // Configure AWS SDK
 const s3Config: aws.ConfigurationOptions = {
   accessKeyId: env.AWS_ACCESS_KEY,
   secretAccessKey: env.AWS_SECRET,
   region: env.AWS_REGION,
-  signatureVersion: "v4",
+  signatureVersion: 'v4',
   s3ForcePathStyle: true, // For MinIO compatibility
 };
 
 // Set custom endpoint if provided
-if (env.S3_URL && env.S3_URL !== "https://s3.amazonaws.com") {
+if (env.S3_URL && env.S3_URL !== 'https://s3.amazonaws.com') {
   (s3Config as any).endpoint = env.S3_URL;
 }
 
@@ -23,16 +23,16 @@ const s3 = new aws.S3();
 // File validation constants
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_FILE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/gif",
-  "image/webp",
-  "application/pdf",
-  "application/msword",
-  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel",
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "text/csv",
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'text/csv',
 ];
 
 interface FileValidationResult {
@@ -42,7 +42,7 @@ interface FileValidationResult {
 
 interface S3UploadResult {
   status: number;
-  type: "Success" | "Error";
+  type: 'Success' | 'Error';
   filePath?: string;
   fileURL?: string;
   errorData?: any;
@@ -55,15 +55,13 @@ interface S3UploadResult {
  */
 function validateFile(file: any): FileValidationResult {
   if (!file || !file.buffer) {
-    return { isValid: false, error: "No file provided" };
+    return { isValid: false, error: 'No file provided' };
   }
 
   if (file.size > MAX_FILE_SIZE) {
     return {
       isValid: false,
-      error: `File size exceeds maximum limit of ${
-        MAX_FILE_SIZE / (1024 * 1024)
-      }MB`,
+      error: `File size exceeds maximum limit of ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
     };
   }
 
@@ -83,13 +81,10 @@ function validateFile(file: any): FileValidationResult {
  * @param fileType - File type
  * @returns string
  */
-function generateSecureFilename(
-  _originalName: string,
-  fileType: string
-): string {
+function generateSecureFilename(_originalName: string, fileType: string): string {
   const timestamp = Date.now();
   const randomString = Math.random().toString(36).substring(2, 15);
-  const extension = fileType.split("/")[1] || "bin";
+  const extension = fileType.split('/')[1] || 'bin';
   return `${timestamp}_${randomString}.${extension}`;
 }
 
@@ -100,10 +95,7 @@ function generateSecureFilename(
  * @returns Promise<S3UploadResult>
  * @throws {Error}
  */
-export const s3Upload = async (
-  file: any,
-  request?: any
-): Promise<S3UploadResult> => {
+export const s3Upload = async (file: any, request?: any): Promise<S3UploadResult> => {
   try {
     // Validate file
     const validation = validateFile(file);
@@ -111,17 +103,14 @@ export const s3Upload = async (
       Logger.warning(request, `File validation failed: ${validation.error}`);
       return {
         status: 400,
-        type: "Error",
+        type: 'Error',
         errorData: { message: validation.error },
       };
     }
 
     // Generate secure filename
-    const fileType = file.mimetype?.toString()?.split("/")?.[1] ?? "bin";
-    const fileName = generateSecureFilename(
-      file.originalname || "file",
-      fileType
-    );
+    const fileType = file.mimetype?.toString()?.split('/')?.[1] ?? 'bin';
+    const fileName = generateSecureFilename(file.originalname || 'file', fileType);
 
     // S3 upload parameters
     const s3Params: aws.S3.PutObjectRequest = {
@@ -130,13 +119,13 @@ export const s3Upload = async (
       Body: file.buffer,
       ContentType: file.mimetype,
       Metadata: {
-        originalName: file.originalname || "unknown",
+        originalName: file.originalname || 'unknown',
         uploadedAt: new Date().toISOString(),
-        uploadedBy: (request?.user as any)?.id || "anonymous",
+        uploadedBy: (request?.user as any)?.id || 'anonymous',
       },
       // Security headers
-      ServerSideEncryption: "AES256",
-      ACL: "private", // Make files private by default
+      ServerSideEncryption: 'AES256',
+      ACL: 'private', // Make files private by default
     };
 
     // Upload to S3
@@ -149,7 +138,7 @@ export const s3Upload = async (
 
     return {
       status: 200,
-      type: "Success",
+      type: 'Success',
       filePath: s3Params.Key,
       fileURL,
     };
@@ -158,9 +147,9 @@ export const s3Upload = async (
 
     return {
       status: 500,
-      type: "Error",
+      type: 'Error',
       errorData: {
-        message: "File upload failed",
+        message: 'File upload failed',
         error: error.message,
       },
     };
@@ -173,10 +162,7 @@ export const s3Upload = async (
  * @param request - Fastify request object for logging
  * @returns Promise<boolean>
  */
-export const s3Delete = async (
-  filePath: string,
-  request?: any
-): Promise<boolean> => {
+export const s3Delete = async (filePath: string, request?: any): Promise<boolean> => {
   try {
     const deleteParams: aws.S3.DeleteObjectRequest = {
       Bucket: env.AWS_BUCKET_NAME,
@@ -210,7 +196,7 @@ export const generatePresignedURL = async (
       Expires: expiresIn,
     };
 
-    return s3.getSignedUrl("getObject", params);
+    return s3.getSignedUrl('getObject', params);
   } catch (error: any) {
     throw new Error(`Failed to generate presigned URL: ${error.message}`);
   }

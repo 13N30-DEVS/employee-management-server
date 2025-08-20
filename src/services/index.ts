@@ -1,3 +1,3 @@
-export * from "./departments";
-export * from "./auth";
-export * from "./designations";
+export * from './departments';
+export * from './auth';
+export * from './designations';

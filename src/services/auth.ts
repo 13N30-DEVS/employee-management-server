@@ -1,4 +1,4 @@
-import { Logger } from "@helpers";
+import { Logger } from '@helpers';
 import {
   employee_information,
   master_user_role,
@@ -8,8 +8,8 @@ import {
   workspace_department,
   workspace_designation,
   workspace_shift,
-} from "@models";
-import { Transaction } from "sequelize";
+} from '@models';
+import { Transaction } from 'sequelize';
 
 // Input interfaces
 interface FindByEmailId {
@@ -168,31 +168,31 @@ class Auth {
       const { emailId } = options;
 
       const userData = await user.findOne({
-        attributes: ["id", "email_id", "password_hash"],
+        attributes: ['id', 'email_id', 'password_hash'],
         include: [
           {
-            attributes: ["id", "name"],
+            attributes: ['id', 'name'],
             required: false,
             model: master_user_role,
-            as: "role_master_user_role",
+            as: 'role_master_user_role',
           },
           {
-            attributes: ["id", "name"],
+            attributes: ['id', 'name'],
             required: false,
             model: master_user_status,
-            as: "status_master_user_status",
+            as: 'status_master_user_status',
           },
           {
-            attributes: ["workspace_id"],
+            attributes: ['workspace_id'],
             required: false,
             model: employee_information,
-            as: "employee_informations",
+            as: 'employee_informations',
             include: [
               {
-                attributes: ["id", "workspace_name"],
+                attributes: ['id', 'workspace_name'],
                 required: false,
                 model: workspace,
-                as: "workspace",
+                as: 'workspace',
               },
             ],
           },
@@ -220,8 +220,7 @@ class Auth {
     transaction: Transaction
   ): Promise<WorkspaceData> {
     try {
-      const { id, workspaceName, workspaceLogo, createdBy, updatedBy } =
-        options;
+      const { id, workspaceName, workspaceLogo, createdBy, updatedBy } = options;
 
       const workspaceData = await workspace.create(
         {
@@ -253,10 +252,7 @@ class Auth {
    * @returns {Promise<UserData>} - A promise that resolves to the created user.
    * @throws {Error} - Throws an error if the creation fails.
    */
-  static async createUser(
-    options: CreateUser,
-    transaction: Transaction
-  ): Promise<UserData> {
+  static async createUser(options: CreateUser, transaction: Transaction): Promise<UserData> {
     try {
       const { id, emailId, passwordHash, role, status } = options;
 
@@ -293,8 +289,7 @@ class Auth {
     transaction: Transaction
   ): Promise<EmployeeInformationData> {
     try {
-      const { id, userId, workspaceId, name, emailId, createdBy, updatedBy } =
-        options;
+      const { id, userId, workspaceId, name, emailId, createdBy, updatedBy } = options;
 
       const employeeInfoData = await employee_information.create(
         {
@@ -407,16 +402,8 @@ class Auth {
     transaction: Transaction
   ): Promise<WorkspaceShiftData> {
     try {
-      const {
-        id,
-        workspaceId,
-        name,
-        description,
-        startTime,
-        endTime,
-        createdBy,
-        updatedBy,
-      } = options;
+      const { id, workspaceId, name, description, startTime, endTime, createdBy, updatedBy } =
+        options;
 
       const workspaceShiftData = await workspace_shift.create(
         {

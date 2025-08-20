@@ -1,3 +1,3 @@
-import { preparePagination } from "./getResponse";
+import { preparePagination } from './getResponse';
 
 export { preparePagination };

@@ -1,9 +1,9 @@
-import { FastifyReply, FastifyRequest } from "fastify";
+import { FastifyReply, FastifyRequest } from 'fastify';
 
-import { queryRequestInfo } from "@mappers";
-import { getDesignations } from "@interactors";
-import { Logger, handleResponse, responseType } from "@helpers";
-import { preparePagination } from "@serializers";
+import { queryRequestInfo } from '@mappers';
+import { getDesignations } from '@interactors';
+import { Logger, handleResponse, responseType } from '@helpers';
+import { preparePagination } from '@serializers';
 
 /**
  * Handles the request to retrieve all designations with pagination and search capabilities.
@@ -18,10 +18,7 @@ import { preparePagination } from "@serializers";
  * It then sends the response using the `handleResponse` helper. If an error occurs during the process,
  * it logs the error and sends an appropriate error response.
  */
-export async function GET_ALL(
-  request: FastifyRequest,
-  reply: FastifyReply
-): Promise<void> {
+export async function GET_ALL(request: FastifyRequest, reply: FastifyReply): Promise<void> {
   try {
     // -----------------------------
     //  MAPPER

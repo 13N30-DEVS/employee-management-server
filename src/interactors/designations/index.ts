@@ -1,6 +1,6 @@
-import { Logger } from "@helpers";
-import { master_designation as designation } from "@models";
-import { Designation } from "@services";
+import { Logger } from '@helpers';
+import { master_designation as designation } from '@models';
+import { Designation } from '@services';
 
 interface Payload {
   offset?: number;
@@ -24,7 +24,7 @@ export const getDesignations = async (
   options: Payload
 ): Promise<{ page: designation[]; count: number; totalCount: number }> => {
   try {
-    const { offset = 0, limit = 10, search = "" } = options;
+    const { offset = 0, limit = 10, search = '' } = options;
 
     const { DesignationResult, totalCount } = await Designation.findAll({
       search,

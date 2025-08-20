@@ -1,7 +1,8 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { handleResponse, responseType } from "@helpers";
-import { SignIn } from "@interactors";
-import { postRequestInfo } from "@mappers";
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { handleResponse, responseType } from '@helpers';
+import { SignIn } from '@interactors';
+import { postRequestInfo } from '@mappers';
+import { AuthenticatedFastifyInstance } from '@types';
 
 /**
  * Handles the signin request, validates the request body using Zod schema,
@@ -14,10 +15,10 @@ import { postRequestInfo } from "@mappers";
  *
  * @returns A promise that resolves to a response object with the authentication token.
  */
-export async function SIGN_IN(
+export async function signIn(
   request: FastifyRequest,
   reply: FastifyReply,
-  fastify: any
+  fastify: AuthenticatedFastifyInstance
 ) {
   const { emailId, password } = postRequestInfo(request);
   const payload = { emailId, password };

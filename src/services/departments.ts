@@ -1,6 +1,6 @@
-import { Logger } from "@helpers";
-import { master_department } from "@models";
-import { Op } from "sequelize";
+import { Logger } from '@helpers';
+import { master_department } from '@models';
+import { Op } from 'sequelize';
 
 interface FindAllOptions {
   search: string;
@@ -29,21 +29,17 @@ class Department {
     try {
       const { search, offset, limit } = options;
 
-      const { count, rows: masterDepartments } =
-        await master_department.findAndCountAll({
-          attributes: ["id", "name", "description"],
-          order: [["id", "ASC"]],
-          where: search
-            ? {
-                [Op.and]: [
-                  { name: { [Op.iLike]: `%${search}%` } },
-                  { is_active: true },
-                ],
-              }
-            : { is_active: true },
-          limit,
-          offset,
-        });
+      const { count, rows: masterDepartments } = await master_department.findAndCountAll({
+        attributes: ['id', 'name', 'description'],
+        order: [['id', 'ASC']],
+        where: search
+          ? {
+              [Op.and]: [{ name: { [Op.iLike]: `%${search}%` } }, { is_active: true }],
+            }
+          : { is_active: true },
+        limit,
+        offset,
+      });
 
       return {
         DepartmentResult: masterDepartments ?? [],

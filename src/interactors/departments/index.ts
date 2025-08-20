@@ -1,6 +1,6 @@
-import { Logger } from "@helpers";
-import { master_department } from "@models";
-import { Department } from "@services";
+import { Logger } from '@helpers';
+import { master_department } from '@models';
+import { Department } from '@services';
 
 interface Payload {
   offset?: number;
@@ -28,7 +28,7 @@ export const getDepartments = async (
   totalCount: number;
 }> => {
   try {
-    const { offset = 0, limit = 10, search = "" } = options;
+    const { offset = 0, limit = 10, search = '' } = options;
 
     const { DepartmentResult, totalCount } = await Department.findAll({
       search,

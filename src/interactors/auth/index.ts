@@ -1,15 +1,11 @@
-import { Auth } from "@services";
-import * as bcrypt from "bcrypt";
-import { sequelize } from "@utils";
-import { v4 as uuidv4 } from "uuid";
-import { LoginInput, SignupInput } from "@schemas";
-import { AuthenticatedFastifyInstance } from "@types";
-import {
-  AppError,
-  NotFoundError,
-  AuthenticationError,
-  ConflictError,
-} from "@helpers";
+import { Auth } from '@services';
+import * as bcrypt from 'bcrypt';
+import { sequelize } from '@utils';
+import { v4 as uuidv4 } from 'uuid';
+import { LoginInput, SignupInput } from '@schemas';
+import { AuthenticatedFastifyInstance } from '@types';
+import { constants } from '@config';
+import { AppError, NotFoundError, AuthenticationError, ConflictError } from '@helpers';
 
 // Return type interfaces
 interface WorkspaceResponse {
@@ -45,21 +41,17 @@ export const SignIn = async (
   const user = await Auth.findByEmailId({ emailId });
 
   if (!user) {
-    throw new NotFoundError("User does not exist.");
+    throw new NotFoundError('User does not exist.');
   }
 
   if (!user.password_hash) {
-    throw new AppError(
-      500,
-      "User password hash not found.",
-      "PASSWORD_HASH_MISSING"
-    );
+    throw new AppError(500, 'User password hash not found.', 'PASSWORD_HASH_MISSING');
   }
 
   const passwordMatch = bcrypt.compareSync(password, user.password_hash);
 
   if (!passwordMatch) {
-    throw new AuthenticationError("Incorrect password.");
+    throw new AuthenticationError('Incorrect password.');
   }
 
   // Authentication Token
@@ -69,10 +61,9 @@ export const SignIn = async (
     roleName: user.role_master_user_role?.name,
     statusId: user.status_master_user_status?.id || 0,
     statusName: user.status_master_user_status?.name,
-    workspaceId: user.employee_informations?.[0]?.workspace?.id || "",
+    workspaceId: user.employee_informations?.[0]?.workspace?.id || '',
     workspaceName:
-      user.employee_informations?.[0]?.workspace?.workspace_name ??
-      "Unknown Workspace",
+      user.employee_informations?.[0]?.workspace?.workspace_name ?? 'Unknown Workspace',
   });
 
   return { token: authToken };
@@ -107,12 +98,11 @@ export const SignUp = async (
     // Check if user already exists
     const existingUser = await Auth.findByEmailId({ emailId });
     if (existingUser) {
-      throw new ConflictError("User with this email already exists.");
+      throw new ConflictError('User with this email already exists.');
     }
 
     // Hash password
-    const saltRounds = 10;
-    const passwordHash = bcrypt.hashSync(password, saltRounds);
+    const passwordHash = bcrypt.hashSync(password, constants.SECURITY_CONSTANTS.BCRYPT_ROUNDS);
 
     // 1. Create user FIRST
     const userId = uuidv4();
@@ -122,7 +112,7 @@ export const SignUp = async (
         emailId,
         passwordHash,
         role,
-        status: 1, // Assuming 1 is active status
+        status: constants.USER_STATUS.ACTIVE,
       },
       transaction
     );
@@ -133,7 +123,7 @@ export const SignUp = async (
       {
         id: workspaceId,
         workspaceName,
-        workspaceLogo: workspaceLogo || "",
+        workspaceLogo: workspaceLogo || '',
         createdBy: userId,
         updatedBy: userId,
       },
@@ -208,7 +198,7 @@ export const SignUp = async (
       userId: user.id,
       roleId: role,
       workspaceId: workspace.id,
-      workspaceName: workspace.workspace_name ?? "Unknown Workspace",
+      workspaceName: workspace.workspace_name ?? 'Unknown Workspace',
     });
 
     // Return properly typed response
@@ -229,10 +219,7 @@ export const SignUp = async (
   } catch (error: unknown) {
     // Rollback transaction on error
     await transaction.rollback();
-    console.error(
-      error instanceof Error ? error.message : "Unknown error",
-      error
-    );
+    console.error(error instanceof Error ? error.message : 'Unknown error', error);
     throw error;
   }
 };

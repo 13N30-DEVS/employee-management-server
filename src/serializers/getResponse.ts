@@ -1,4 +1,4 @@
-import { Logger, pagination } from "@helpers";
+import { Logger, pagination } from '@helpers';
 
 interface GetServicePayload {
   result: {
@@ -61,9 +61,7 @@ function preparePagination(options: GetServicePayload): GetServiceResponse {
     };
   } catch (error: any) {
     Logger.error(error.message, error);
-    throw new Error(
-      "Failed to extract pagination parameters from the response."
-    );
+    throw new Error('Failed to extract pagination parameters from the response.');
   }
 }
 

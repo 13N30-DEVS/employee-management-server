@@ -1,7 +1,7 @@
-import jwt from "@fastify/jwt";
-import { env } from "@config";
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import fp from "fastify-plugin";
+import jwt from '@fastify/jwt';
+import { env } from '@config';
+import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import fp from 'fastify-plugin';
 
 // JWT Payload interface
 interface JwtPayload {
@@ -18,9 +18,7 @@ interface JwtPayload {
 export default fp(async (fastify: FastifyInstance) => {
   // Validate JWT secret
   if (!env.JWT_SECRET || env.JWT_SECRET.length < 32) {
-    throw new Error(
-      "JWT_SECRET environment variable must be at least 32 characters long."
-    );
+    throw new Error('JWT_SECRET environment variable must be at least 32 characters long.');
   }
 
   await fastify.register(jwt, {
@@ -32,32 +30,29 @@ export default fp(async (fastify: FastifyInstance) => {
 
   // Decorate authenticate method with better error handling
   fastify.decorate(
-    "authenticate",
-    async function (
-      request: FastifyRequest,
-      reply: FastifyReply
-    ): Promise<void> {
+    'authenticate',
+    async function (request: FastifyRequest, reply: FastifyReply): Promise<void> {
       try {
         await request.jwtVerify();
       } catch (err: unknown) {
         const error = err as any;
-        if (error.code === "FST_JWT_AUTHORIZATION_TOKEN_EXPIRED") {
+        if (error.code === 'FST_JWT_AUTHORIZATION_TOKEN_EXPIRED') {
           reply.code(401).send({
-            error: "Token expired",
-            code: "TOKEN_EXPIRED",
-            message: "Authentication token has expired",
+            error: 'Token expired',
+            code: 'TOKEN_EXPIRED',
+            message: 'Authentication token has expired',
           });
-        } else if (error.code === "FST_JWT_AUTHORIZATION_TOKEN_INVALID") {
+        } else if (error.code === 'FST_JWT_AUTHORIZATION_TOKEN_INVALID') {
           reply.code(401).send({
-            error: "Invalid token",
-            code: "INVALID_TOKEN",
-            message: "Authentication token is invalid",
+            error: 'Invalid token',
+            code: 'INVALID_TOKEN',
+            message: 'Authentication token is invalid',
           });
         } else {
           reply.code(401).send({
-            error: "Unauthorized",
-            code: "UNAUTHORIZED",
-            message: "Authentication required",
+            error: 'Unauthorized',
+            code: 'UNAUTHORIZED',
+            message: 'Authentication required',
           });
         }
       }
@@ -65,33 +60,24 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   // Decorate refresh token method
-  fastify.decorate(
-    "generateRefreshToken",
-    function (payload: JwtPayload): string {
-      return fastify.jwt.sign(payload, {
-        expiresIn: env.JWT_REFRESH_EXPIRES_IN,
-      });
-    }
-  );
+  fastify.decorate('generateRefreshToken', function (payload: JwtPayload): string {
+    return fastify.jwt.sign(payload, {
+      expiresIn: env.JWT_REFRESH_EXPIRES_IN,
+    });
+  });
 
   // Decorate access token method
-  fastify.decorate(
-    "generateAccessToken",
-    function (payload: JwtPayload): string {
-      return fastify.jwt.sign(payload, {
-        expiresIn: env.JWT_EXPIRES_IN,
-      });
-    }
-  );
+  fastify.decorate('generateAccessToken', function (payload: JwtPayload): string {
+    return fastify.jwt.sign(payload, {
+      expiresIn: env.JWT_EXPIRES_IN,
+    });
+  });
 });
 
 // Extend FastifyInstance interface
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyInstance {
-    authenticate: (
-      request: FastifyRequest,
-      reply: FastifyReply
-    ) => Promise<void>;
+    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
     generateRefreshToken: (payload: JwtPayload) => string;
     generateAccessToken: (payload: JwtPayload) => string;
   }

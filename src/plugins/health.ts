@@ -1,14 +1,14 @@
-import fp from "fastify-plugin";
-import { FastifyInstance } from "fastify";
+import fp from 'fastify-plugin';
+import { FastifyInstance } from 'fastify';
 
 interface HealthStatus {
-  status: "ok" | "error";
+  status: 'ok' | 'error';
   timestamp: string;
   uptime: number;
   services: {
-    database: "healthy" | "unhealthy";
-    redis: "healthy" | "unhealthy";
-    memory: "healthy" | "unhealthy";
+    database: 'healthy' | 'unhealthy';
+    redis: 'healthy' | 'unhealthy';
+    memory: 'healthy' | 'unhealthy';
   };
   memory: {
     used: number;
@@ -20,27 +20,27 @@ interface HealthStatus {
 
 export default fp(async (fastify: FastifyInstance) => {
   // Health check endpoint
-  fastify.get("/health", async (): Promise<HealthStatus> => {
+  fastify.get('/health', async (): Promise<HealthStatus> => {
     // Check database health
-    let dbStatus: "healthy" | "unhealthy" = "unhealthy";
+    let dbStatus: 'healthy' | 'unhealthy' = 'unhealthy';
     try {
       if (fastify.sequelize) {
         await fastify.sequelize.authenticate();
-        dbStatus = "healthy";
+        dbStatus = 'healthy';
       }
     } catch (error) {
-      console.error("Database health check failed:", error);
+      console.error('Database health check failed:', error);
     }
 
     // Check Redis health
-    let redisStatus: "healthy" | "unhealthy" = "unhealthy";
+    let redisStatus: 'healthy' | 'unhealthy' = 'unhealthy';
     try {
       if (fastify.redis) {
         await fastify.redis.ping();
-        redisStatus = "healthy";
+        redisStatus = 'healthy';
       }
     } catch (error) {
-      console.error("Redis health check failed:", error);
+      console.error('Redis health check failed:', error);
     }
 
     // Check memory usage
@@ -49,16 +49,13 @@ export default fp(async (fastify: FastifyInstance) => {
     const usedMemory = memUsage.heapUsed;
     const memoryPercentage = (usedMemory / totalMemory) * 100;
 
-    const memoryStatus: "healthy" | "unhealthy" =
-      memoryPercentage < 90 ? "healthy" : "unhealthy";
+    const memoryStatus: 'healthy' | 'unhealthy' = memoryPercentage < 90 ? 'healthy' : 'unhealthy';
 
     // Determine overall status
-    const overallStatus: "ok" | "error" =
-      dbStatus === "healthy" &&
-      redisStatus === "healthy" &&
-      memoryStatus === "healthy"
-        ? "ok"
-        : "error";
+    const overallStatus: 'ok' | 'error' =
+      dbStatus === 'healthy' && redisStatus === 'healthy' && memoryStatus === 'healthy'
+        ? 'ok'
+        : 'error';
 
     const healthStatus: HealthStatus = {
       status: overallStatus,
@@ -74,23 +71,23 @@ export default fp(async (fastify: FastifyInstance) => {
         total: Math.round(totalMemory / 1024 / 1024), // MB
         percentage: Math.round(memoryPercentage * 100) / 100,
       },
-      version: process.env.npm_package_version || "1.0.0",
+      version: process.env.npm_package_version || '1.0.0',
     };
 
     // Set appropriate status code
-    if (overallStatus === "error") {
-      fastify.log.warn("Health check failed", healthStatus);
+    if (overallStatus === 'error') {
+      fastify.log.warn('Health check failed', healthStatus);
     }
 
     return healthStatus;
   });
 
   // Detailed health check endpoint
-  fastify.get("/health/detailed", async () => {
+  fastify.get('/health/detailed', async () => {
     const detailedHealth = {
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
-      environment: process.env.NODE_ENV || "development",
+      environment: process.env.NODE_ENV || 'development',
       nodeVersion: process.version,
       platform: process.platform,
       arch: process.arch,
@@ -107,7 +104,7 @@ export default fp(async (fastify: FastifyInstance) => {
   });
 
   // Readiness probe for Kubernetes
-  fastify.get("/ready", async (request, reply) => {
+  fastify.get('/ready', async (request, reply) => {
     try {
       // Check if database is ready
       if (fastify.sequelize) {
@@ -119,17 +116,17 @@ export default fp(async (fastify: FastifyInstance) => {
         await fastify.redis.ping();
       }
 
-      reply.status(200).send({ status: "ready" });
+      reply.status(200).send({ status: 'ready' });
     } catch (error) {
       reply.status(503).send({
-        status: "not ready",
-        error: error instanceof Error ? error.message : "Unknown error",
+        status: 'not ready',
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
     }
   });
 
   // Liveness probe for Kubernetes
-  fastify.get("/live", async (request, reply) => {
-    reply.status(200).send({ status: "alive" });
+  fastify.get('/live', async (request, reply) => {
+    reply.status(200).send({ status: 'alive' });
   });
 });

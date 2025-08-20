@@ -1,4 +1,4 @@
-import { s3Upload } from "@helpers";
+import { s3Upload } from '@helpers';
 
 /**
  * @function singleFileUpload
@@ -8,14 +8,10 @@ import { s3Upload } from "@helpers";
  * @return {Promise<Object>}
  * @throws {Error}
  */
-export async function singleFileUpload({
-  uploadedFile,
-}: {
-  uploadedFile: any;
-}): Promise<object> {
+export async function singleFileUpload({ uploadedFile }: { uploadedFile: any }): Promise<object> {
   try {
-    let fileURL: string = "";
-    let filePath: string = "";
+    let fileURL: string = '';
+    let filePath: string = '';
 
     // Uploading Single File To S3 Bucket & Genrate File URL & Path
     let uploadData: any = await s3Upload(uploadedFile);
@@ -30,10 +26,7 @@ export async function singleFileUpload({
       };
     } else {
       // If Uploading File to s3 Gets Error
-      console.log(
-        "Error While Uploading Profile Picture",
-        uploadData?.errorData
-      );
+      console.log('Error While Uploading Profile Picture', uploadData?.errorData);
       throw new Error(uploadData?.errorData);
     }
   } catch (error: any) {

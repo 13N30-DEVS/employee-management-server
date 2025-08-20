@@ -1,5 +1,1 @@
-export {
-  validateRequest,
-  validateMultiple,
-  validateFileUpload,
-} from "./validation";
+export { validateRequest, validateMultiple, validateFileUpload } from './validation';

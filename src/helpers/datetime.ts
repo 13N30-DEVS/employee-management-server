@@ -1,5 +1,5 @@
 function now(type?: string) {
-  return type !== "unix" ? new Date() : Date.now;
+  return type !== 'unix' ? new Date() : Date.now;
 }
 
 /**
@@ -22,9 +22,9 @@ function getTimeString(date: Date): string {
   const hours: number = date.getHours();
   const minutes: number = date.getMinutes();
   const seconds: number = date.getSeconds();
-  return `${hours.toString().padStart(2, "0")}:${minutes
+  return `${hours.toString().padStart(2, '0')}:${minutes
     .toString()
-    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 /**
  * Converts a given date to a string in the format "Sat Mar 28 2020".
@@ -56,11 +56,11 @@ function subtractOneDay(dates: Date): string {
 
   // Get the date components
   let year = date.getFullYear();
-  let month = String(date.getMonth() + 1).padStart(2, "0");
-  let day = String(date.getDate()).padStart(2, "0");
-  let hours = String(date.getHours()).padStart(2, "0");
-  let minutes = String(date.getMinutes()).padStart(2, "0");
-  let seconds = String(date.getSeconds()).padStart(2, "0");
+  let month = String(date.getMonth() + 1).padStart(2, '0');
+  let day = String(date.getDate()).padStart(2, '0');
+  let hours = String(date.getHours()).padStart(2, '0');
+  let minutes = String(date.getMinutes()).padStart(2, '0');
+  let seconds = String(date.getSeconds()).padStart(2, '0');
 
   // Return the formatted date string
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;

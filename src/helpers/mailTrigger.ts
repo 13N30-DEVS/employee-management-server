@@ -1,5 +1,5 @@
-import { createTransport } from "nodemailer";
-import { env } from "@config";
+import { createTransport } from 'nodemailer';
+import { env } from '@config';
 
 /**
  * Creates a nodemailer transport using the configured SMTP server and credentials.

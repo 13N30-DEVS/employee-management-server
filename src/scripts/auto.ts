@@ -1,9 +1,8 @@
-import { Sequelize } from "sequelize";
-import { AutoOptions, SequelizeAuto } from "sequelize-auto";
-import { config } from "dotenv";
-config({ path: ".env" });
-const { DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_DIALECT }: any =
-  process.env;
+import { Sequelize } from 'sequelize';
+import { AutoOptions, SequelizeAuto } from 'sequelize-auto';
+import { config } from 'dotenv';
+config({ path: '.env' });
+const { DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, DB_PORT, DB_DIALECT }: any = process.env;
 
 async function main() {
   const sequelize = new Sequelize(DB_NAME, DB_USERNAME, DB_PASSWORD, {
@@ -15,10 +14,10 @@ async function main() {
   sequelize
     .authenticate()
     .then(() => {
-      console.log("Database connection has been established successfully.");
+      console.log('Database connection has been established successfully.');
     })
-    .catch((err) => {
-      console.error("Unable to connect to the database:", err);
+    .catch(err => {
+      console.error('Unable to connect to the database:', err);
     });
 
   const autoOptions: AutoOptions = {
@@ -28,22 +27,17 @@ async function main() {
     host: DB_HOST,
     port: DB_PORT,
     dialect: DB_DIALECT,
-    directory: "./src/models",
+    directory: './src/models',
     additional: {
       timestamps: false,
     },
     noAlias: false,
     singularize: true,
     useDefine: false,
-    lang: "ts",
-    skipTables: ["_prisma_migrations", "knex_migration"],
+    lang: 'ts',
+    skipTables: ['_prisma_migrations', 'knex_migration'],
   };
-  const auto = new SequelizeAuto(
-    DB_NAME,
-    DB_USERNAME,
-    DB_PASSWORD,
-    autoOptions
-  );
+  const auto = new SequelizeAuto(DB_NAME, DB_USERNAME, DB_PASSWORD, autoOptions);
   await auto.run();
 }
 

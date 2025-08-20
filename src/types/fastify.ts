@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 
 // Extended FastifyInstance with custom decorators
 export interface AuthenticatedFastifyInstance extends FastifyInstance {
@@ -28,7 +28,7 @@ export interface AuthenticatedRequest extends FastifyRequest {
 
 export interface WorkspaceRequest extends AuthenticatedRequest {
   headers: {
-    "x-workspace-id": string;
+    'x-workspace-id': string;
     authorization: string;
     [key: string]: string | undefined;
   };

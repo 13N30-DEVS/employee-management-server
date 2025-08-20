@@ -1,31 +1,31 @@
-import Schema, { JSONSchema } from "fluent-json-schema";
+import Schema, { JSONSchema } from 'fluent-json-schema';
 
 export const commonHeaders = Schema.object()
-  .id("commonHeaders")
+  .id('commonHeaders')
   .prop(
-    "authorization",
-    Schema.string().description("The authorization token for authentication.")
+    'authorization',
+    Schema.string().description('The authorization token for authentication.')
   );
 
 export const commonQuerys = Schema.object()
-  .id("commonQuerys")
+  .id('commonQuerys')
   .additionalProperties(false)
   .prop(
-    "offset",
+    'offset',
     Schema.number().description(
-      "The starting point of the data to be retrieved in the paginated response."
+      'The starting point of the data to be retrieved in the paginated response.'
     )
   )
   .prop(
-    "limit",
+    'limit',
     Schema.number().description(
-      "The maximum number of items to be included in a single page of the paginated response."
+      'The maximum number of items to be included in a single page of the paginated response.'
     )
   )
   .prop(
-    "search",
+    'search',
     Schema.string().description(
-      "Based on the search value, the number of items will be retrieved in the paginated response."
+      'Based on the search value, the number of items will be retrieved in the paginated response.'
     )
   );
 
@@ -43,45 +43,43 @@ export const commonQuerys = Schema.object()
  * - "409": Represents a conflict error with additional properties allowed.
  * - "500": Represents an internal server error with additional properties allowed.
  */
-export const makeResponseSchema = (
-  response: JSONSchema
-): Record<string, JSONSchema> => {
+export const makeResponseSchema = (response: JSONSchema): Record<string, JSONSchema> => {
   const responseType: Record<string, JSONSchema> = {
-    "200": response,
-    "400": Schema.object()
-      .description("Bad Request")
-      .prop("isError", Schema.boolean())
-      .prop("message", Schema.string())
-      .prop("origin", Schema.string())
-      .prop("timestamp", Schema.string())
+    '200': response,
+    '400': Schema.object()
+      .description('Bad Request')
+      .prop('isError', Schema.boolean())
+      .prop('message', Schema.string())
+      .prop('origin', Schema.string())
+      .prop('timestamp', Schema.string())
       .valueOf() as JSONSchema,
-    "401": Schema.object()
-      .description("Un Authorized response")
-      .prop("isError", Schema.boolean())
-      .prop("message", Schema.string())
-      .prop("origin", Schema.string())
-      .prop("timestamp", Schema.string())
+    '401': Schema.object()
+      .description('Un Authorized response')
+      .prop('isError', Schema.boolean())
+      .prop('message', Schema.string())
+      .prop('origin', Schema.string())
+      .prop('timestamp', Schema.string())
       .valueOf() as JSONSchema,
-    "409": Schema.object()
-      .description("Error Response")
-      .prop("isError", Schema.boolean())
-      .prop("message", Schema.string())
-      .prop("origin", Schema.string())
-      .prop("timestamp", Schema.string())
+    '409': Schema.object()
+      .description('Error Response')
+      .prop('isError', Schema.boolean())
+      .prop('message', Schema.string())
+      .prop('origin', Schema.string())
+      .prop('timestamp', Schema.string())
       .valueOf() as JSONSchema,
-    "422": Schema.object()
-      .description("Validation Error Response")
-      .prop("isError", Schema.boolean())
-      .prop("message", Schema.string())
-      .prop("origin", Schema.string())
-      .prop("timestamp", Schema.string())
+    '422': Schema.object()
+      .description('Validation Error Response')
+      .prop('isError', Schema.boolean())
+      .prop('message', Schema.string())
+      .prop('origin', Schema.string())
+      .prop('timestamp', Schema.string())
       .valueOf() as JSONSchema,
-    "500": Schema.object()
-      .description("Internal Server Error Response")
-      .prop("isError", Schema.boolean())
-      .prop("message", Schema.string())
-      .prop("origin", Schema.string())
-      .prop("timestamp", Schema.string())
+    '500': Schema.object()
+      .description('Internal Server Error Response')
+      .prop('isError', Schema.boolean())
+      .prop('message', Schema.string())
+      .prop('origin', Schema.string())
+      .prop('timestamp', Schema.string())
       .valueOf() as JSONSchema,
   };
   return responseType;

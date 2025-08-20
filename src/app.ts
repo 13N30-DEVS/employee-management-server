@@ -1,10 +1,10 @@
-import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
-import { FastifyPluginAsync } from "fastify";
-import { cpus } from "os";
-import { join } from "path";
-import v1 from "./api/v1";
-import { commonHeaders, commonQuerys } from "./helpers";
-import { globalErrorHandler } from "./helpers/errorHandler";
+import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload';
+import { FastifyPluginAsync } from 'fastify';
+import { cpus } from 'os';
+import { join } from 'path';
+import v1 from './api/v1';
+import { commonHeaders, commonQuerys } from './helpers';
+import { globalErrorHandler } from './helpers/errorHandler';
 
 process.env.UV_THREADPOOL_SIZE = String(cpus().length);
 
@@ -13,10 +13,7 @@ export type AppOptions = Partial<AutoloadPluginOptions>;
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {};
 
-const app: FastifyPluginAsync<AppOptions> = async (
-  fastify,
-  opts
-): Promise<void> => {
+const app: FastifyPluginAsync<AppOptions> = async (fastify, opts): Promise<void> => {
   // Place here your custom code!
 
   // Do not touch the following lines
@@ -32,7 +29,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify.setErrorHandler(globalErrorHandler);
 
   fastify.register(AutoLoad, {
-    dir: join(__dirname, "plugins"),
+    dir: join(__dirname, 'plugins'),
     options: opts,
   });
 

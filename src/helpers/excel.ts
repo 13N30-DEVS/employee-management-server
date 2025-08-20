@@ -1,5 +1,5 @@
-import * as Excel from "exceljs";
-import * as async from "async";
+import * as Excel from 'exceljs';
+import * as async from 'async';
 
 interface WorkbookOptions {
   filename: string;
@@ -10,7 +10,7 @@ interface WorkbookOptions {
 interface BatchWriterParams {
   WorkSheet: Excel.Worksheet;
   headers: string[];
-  controller: (params: any, skip: number, limit: number) => Promise<any[]>;
+  controller: (_params: any, _skip: number, _limit: number) => Promise<any[]>;
   params: any;
   totalRows: number;
   batchSize: any;
@@ -24,10 +24,7 @@ interface BatchWriterParams {
  * @return {Promise<any[]>} An array of objects representing each row in the sheet.
  */
 
-async function readExcelRows(
-  filePath: string,
-  sheetName: string = "Sheet1"
-): Promise<any[]> {
+async function readExcelRows(filePath: string, sheetName: string = 'Sheet1'): Promise<any[]> {
   const workbook = new Excel.Workbook();
   await workbook.xlsx.readFile(filePath);
 
@@ -36,17 +33,14 @@ async function readExcelRows(
   const headerRow = worksheet.getRow(1).values;
 
   const rows: any[] = [];
-  worksheet.eachRow(
-    { includeEmpty: false, skip: 1 },
-    (row: any, rowNumber: any) => {
-      const rowValues = row.values;
-      const rowData: any = {};
-      headerRow.forEach((header: any, columnIndex: any) => {
-        rowData[header] = rowValues[columnIndex];
-      });
-      rows.push(rowData);
-    }
-  );
+  worksheet.eachRow({ includeEmpty: false, skip: 1 }, (row: any, _rowNumber: any) => {
+    const rowValues = row.values;
+    const rowData: any = {};
+    headerRow.forEach((header: any, columnIndex: any) => {
+      rowData[header] = rowValues[columnIndex];
+    });
+    rows.push(rowData);
+  });
 
   return rows;
 }
@@ -60,7 +54,7 @@ async function readExcelRows(
  */
 const makeExcel = (
   location: string,
-  sheetName: string
+  _sheetName: string
 ): Promise<{ WorkBook: Excel.stream.xlsx.WorkbookWriter }> => {
   return new Promise((resolve, reject) => {
     try {
@@ -72,7 +66,7 @@ const makeExcel = (
 
       const WorkBook = new Excel.stream.xlsx.WorkbookWriter(options);
 
-      console.log("File has been created successfully!");
+      console.log('File has been created successfully!');
 
       resolve({ WorkBook });
     } catch (error) {
@@ -90,10 +84,8 @@ Adds a new sheet to the Excel workbook.
 @param {Excel.stream.xlsx.WorkbookWriter} WorkBook - The workbook to which the sheet should be added.
 @param {string} sheetName - The name of the new sheet.
 @return {Excel.Worksheet} The added worksheet object. */
-const addSheet = (
-  WorkBook: Excel.stream.xlsx.WorkbookWriter,
-  sheetName: string
-): Excel.Worksheet => WorkBook.addWorksheet(sheetName);
+const addSheet = (WorkBook: Excel.stream.xlsx.WorkbookWriter, sheetName: string): Excel.Worksheet =>
+  WorkBook.addWorksheet(sheetName);
 
 /**
  * Writes the header row in the given Excel worksheet.
@@ -105,7 +97,7 @@ const addSheet = (
 const writeHeader = (workSheet: Excel.Worksheet, headers: string[]): void => {
   try {
     if (headers.length > 0) {
-      const cols = headers.map((item) => ({
+      const cols = headers.map(item => ({
         header: item,
         key: item,
         width: 33,
@@ -128,10 +120,7 @@ const writeHeader = (workSheet: Excel.Worksheet, headers: string[]): void => {
  * @param {any[] | object} data - The data to be written as rows. It can be an array of objects or a single object.
  * @return {Promise<void>} A promise that resolves when the rows are successfully written, or rejects with an error if there was a problem.
  */
-const WriteRows = (
-  workSheet: Excel.Worksheet,
-  data: any[] | object
-): Promise<void> => {
+const WriteRows = (workSheet: Excel.Worksheet, data: any[] | object): Promise<void> => {
   return new Promise((resolve, reject) => {
     try {
       if (Array.isArray(data) && data.length > 0) {
@@ -141,7 +130,7 @@ const WriteRows = (
             workSheet.addRow(row).commit();
             callback();
           },
-          (err) => {
+          err => {
             if (err) {
               reject(err);
             } else {
@@ -166,9 +155,7 @@ const WriteRows = (
  * @param {Excel.stream.xlsx.WorkbookWriter} workbook - The Excel workbook to commit.
  * @return {Promise<void>} A promise that resolves when the commit is successful, or rejects with an error if there was an issue.
  */
-const commitExcel = (
-  workbook: Excel.stream.xlsx.WorkbookWriter
-): Promise<void> => {
+const commitExcel = (workbook: Excel.stream.xlsx.WorkbookWriter): Promise<void> => {
   return new Promise((resolve, reject) => {
     workbook.commit().then(resolve).catch(reject);
   });
@@ -236,9 +223,7 @@ const BatchWriter = async (params: BatchWriterParams): Promise<void> => {
  * @param {Record<string, string>} struct - The struct object to map the keys from.
  * @return {{ header: string; key: string }[]} - An array of objects containing the header and key.
  */
-const keyMapper = (
-  struct: Record<string, string>
-): { header: string; key: string }[] => {
+const keyMapper = (struct: Record<string, string>): { header: string; key: string }[] => {
   let result: { header: string; key: string }[] = [];
 
   for (const key in struct) {

@@ -1,6 +1,6 @@
-import { env } from "@config";
-import * as url from "url";
-import { Logger } from "./logger";
+import { env, constants } from '@config';
+import * as url from 'url';
+import { Logger } from './logger';
 
 interface PaginationResult {
   limit: number;
@@ -25,6 +25,22 @@ interface LinkResult {
   lastPageLink: string;
 }
 
+// Create a mock request object for logging when no request is available
+const createMockRequest = () =>
+  ({
+    id: 'system',
+    url: '/system',
+    method: 'SYSTEM',
+    ip: '127.0.0.1',
+    hostname: 'localhost',
+    protocol: 'http',
+    headers: { 'user-agent': 'system' },
+    query: {},
+    params: {},
+    body: null,
+    user: undefined,
+  }) as any;
+
 /**
  * Generates a new URL by updating or setting the "offset" and "limit" query parameters.
  * @param newOffset - The new value for the "offset" query parameter.
@@ -32,21 +48,18 @@ interface LinkResult {
  * @param newLimit - The new value for the "limit" query parameter.
  * @returns - The updated URL as a string.
  */
-function parseLink(
-  newOffset: number,
-  baseUrl: string,
-  newLimit: number
-): string {
+function parseLink(newOffset: number, baseUrl: string, newLimit: number): string {
   try {
     const parsedUrl = new url.URL(baseUrl);
 
-    parsedUrl.searchParams.set("offset", newOffset.toString());
-    parsedUrl.searchParams.set("limit", newLimit.toString());
+    parsedUrl.searchParams.set('offset', newOffset.toString());
+    parsedUrl.searchParams.set('limit', newLimit.toString());
 
     return parsedUrl.toString();
-  } catch (error: any) {
-    Logger.error(error.message, error);
-    throw new Error("URL Update Error");
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    Logger.error(createMockRequest(), `URL Update Error: ${errorMessage}`, error);
+    throw new Error('URL Update Error');
   }
 }
 
@@ -67,19 +80,17 @@ function generateLinks(
   try {
     let nextPageNumber = Math.floor(offset / limit) + 1;
     return {
-      previousPageLink:
-        offset > 0 ? parseLink(offset - limit, baseUrl, limit) : null,
+      previousPageLink: offset > 0 ? parseLink(offset - limit, baseUrl, limit) : null,
       currentPageLink: parseLink(offset, baseUrl, limit),
       nextPageLink:
-        nextPageNumber < totalPages
-          ? parseLink(nextPageNumber * limit, baseUrl, limit)
-          : null,
+        nextPageNumber < totalPages ? parseLink(nextPageNumber * limit, baseUrl, limit) : null,
       firstPageLink: parseLink(0, baseUrl, limit),
       lastPageLink: parseLink((totalPages - 1) * limit, baseUrl, limit),
     };
-  } catch (error: any) {
-    Logger.error(error.message, error);
-    throw new Error("Page Link Error");
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    Logger.error(createMockRequest(), `Page Link Error: ${errorMessage}`, error);
+    throw new Error('Page Link Error');
   }
 }
 
@@ -101,7 +112,13 @@ function pagination(options: {
   url: string;
 }): PaginationResult {
   try {
-    let { limit, offset = 0, page, url, totalCount } = options;
+    let {
+      limit,
+      offset = constants.PAGINATION_CONSTANTS.DEFAULT_OFFSET,
+      page,
+      url,
+      totalCount,
+    } = options;
 
     if (!page) {
       page = Math.floor(offset / limit) + 1;
@@ -123,9 +140,10 @@ function pagination(options: {
       nextPage: page < totalPages ? page + 1 : null,
       ...paginationLinks,
     };
-  } catch (error: any) {
-    Logger.error(error.message, error);
-    throw new Error("Pagination Error");
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    Logger.error(createMockRequest(), `Pagination Error: ${errorMessage}`, error);
+    throw new Error('Pagination Error');
   }
 }
 

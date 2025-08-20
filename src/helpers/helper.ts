@@ -1,4 +1,5 @@
-import * as moment from "moment";
+import { parse, format } from 'date-fns';
+import { constants } from '@config';
 
 /**
  * Converts a time string from 12-hour format to 24-hour format with seconds.
@@ -7,7 +8,14 @@ import * as moment from "moment";
  * @returns {string} The time string converted to 24-hour format with seconds.
  */
 export const convertTo24HourFormat = (time: string): string => {
-  return moment(time, ["h:mm A"]).format("HH:mm:ss");
+  try {
+    const parsedTime = parse(time, constants.TIME_CONSTANTS.FORMATS.TIME_12H, new Date());
+    return format(parsedTime, constants.TIME_CONSTANTS.FORMATS.TIME_24H);
+  } catch (error) {
+    // Fallback for invalid time format
+    console.warn(`Invalid time format: ${time}, returning original`);
+    return time;
+  }
 };
 
 /**
@@ -16,11 +24,11 @@ export const convertTo24HourFormat = (time: string): string => {
  * @param {Record<string, any>} obj - The object to process.
  */
 export const processNestedObjects = (obj: Record<string, any>): void => {
-  const timeRegex = /^(0[1-9]|1[0-2]):[0-5]\d [APMapm]{2}$/;
+  const timeRegex = constants.TIME_CONSTANTS.REGEX.TIME_12H;
   for (const [key, value] of Object.entries(obj)) {
-    if (typeof value === "string" && timeRegex.exec(value)) {
+    if (typeof value === 'string' && timeRegex.exec(value)) {
       obj[key] = convertTo24HourFormat(value);
-    } else if (typeof value === "object") {
+    } else if (typeof value === 'object' && value !== null) {
       processNestedObjects(value);
     }
   }

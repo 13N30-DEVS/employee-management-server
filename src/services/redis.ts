@@ -1,5 +1,5 @@
-import Redis from "ioredis";
-import { REDIS_CONFIG } from "../config/redis";
+import Redis from 'ioredis';
+import { REDIS_CONFIG } from '../config/redis';
 
 export interface CacheOptions {
   ttl?: number; // Time to live in seconds
@@ -49,7 +49,7 @@ class RedisService {
 
       this.setupEventHandlers();
     } catch (error) {
-      console.error("Failed to initialize Redis connection", error);
+      console.error('Failed to initialize Redis connection', error);
       this.redis = null;
     }
   }
@@ -57,42 +57,39 @@ class RedisService {
   private setupEventHandlers(): void {
     if (!this.redis) return;
 
-    this.redis.on("connect", () => {
+    this.redis.on('connect', () => {
       this.isConnected = true;
-      console.log("Redis connected successfully");
+      console.log('Redis connected successfully');
     });
 
-    this.redis.on("ready", () => {
+    this.redis.on('ready', () => {
       this.isConnected = true;
-      console.log("Redis is ready");
+      console.log('Redis is ready');
     });
 
-    this.redis.on("error", (error) => {
+    this.redis.on('error', error => {
       this.isConnected = false;
-      console.error("Redis connection error", error);
+      console.error('Redis connection error', error);
     });
 
-    this.redis.on("close", () => {
+    this.redis.on('close', () => {
       this.isConnected = false;
-      console.warn("Redis connection closed");
+      console.warn('Redis connection closed');
     });
 
-    this.redis.on("end", () => {
+    this.redis.on('end', () => {
       this.isConnected = false;
-      console.warn("Redis connection ended");
+      console.warn('Redis connection ended');
     });
   }
 
   private generateKey(key: string, namespace?: string): string {
     const prefix = REDIS_CONFIG.KEY_PREFIX;
-    const ns = namespace ? `${namespace}:` : "";
+    const ns = namespace ? `${namespace}:` : '';
     return `${prefix}${ns}${key}`;
   }
 
-  private async executeCommand<T>(
-    command: () => Promise<T>,
-    fallback?: T
-  ): Promise<T | null> {
+  private async executeCommand<T>(command: () => Promise<T>, fallback?: T): Promise<T | null> {
     if (!this.redis || !this.isConnected) {
       return fallback || null;
     }
@@ -101,17 +98,13 @@ class RedisService {
       const result = await command();
       return result;
     } catch (error) {
-      console.error("Redis command failed", error);
+      console.error('Redis command failed', error);
       return fallback || null;
     }
   }
 
   // Cache operations
-  async set<T>(
-    key: string,
-    data: T,
-    options: CacheOptions = {}
-  ): Promise<boolean> {
+  async set<T>(key: string, data: T, options: CacheOptions = {}): Promise<boolean> {
     const { ttl = REDIS_CONFIG.DEFAULT_TTL, tags = [], namespace } = options;
 
     const cacheKey = this.generateKey(key, namespace);
@@ -120,7 +113,7 @@ class RedisService {
       timestamp: Date.now(),
       ttl,
       tags,
-      namespace: namespace || "default",
+      namespace: namespace || 'default',
     };
 
     try {
@@ -129,12 +122,12 @@ class RedisService {
         this.redis!.setex(cacheKey, ttl, JSON.stringify(entry))
       );
 
-      if (result === "OK" && tags.length > 0) {
+      if (result === 'OK' && tags.length > 0) {
         // Store tag associations for invalidation
         await this.storeTagAssociations(cacheKey, tags);
       }
 
-      return result === "OK";
+      return result === 'OK';
     } catch (error) {
       console.error(`Failed to set cache key: ${cacheKey}`, error);
       return false;
@@ -184,16 +177,11 @@ class RedisService {
     const cacheKey = this.generateKey(key, namespace);
 
     try {
-      const result = await this.executeCommand(() =>
-        this.redis!.exists(cacheKey)
-      );
+      const result = await this.executeCommand(() => this.redis!.exists(cacheKey));
 
       return result === 1;
     } catch (error) {
-      console.error(
-        `Failed to check existence of cache key: ${cacheKey}`,
-        error
-      );
+      console.error(`Failed to check existence of cache key: ${cacheKey}`, error);
       return false;
     }
   }
@@ -202,9 +190,7 @@ class RedisService {
     const cacheKey = this.generateKey(key, namespace);
 
     try {
-      const result = await this.executeCommand(() =>
-        this.redis!.expire(cacheKey, ttl)
-      );
+      const result = await this.executeCommand(() => this.redis!.expire(cacheKey, ttl));
 
       return result === 1;
     } catch (error) {
@@ -231,9 +217,7 @@ class RedisService {
     const tagKey = this.generateKey(`tag:${tag}`);
 
     try {
-      const keys = await this.executeCommand(() =>
-        this.redis!.smembers(tagKey)
-      );
+      const keys = await this.executeCommand(() => this.redis!.smembers(tagKey));
 
       if (!keys || keys.length === 0) return 0;
 
@@ -255,7 +239,7 @@ class RedisService {
   }
 
   async invalidateByNamespace(namespace: string): Promise<number> {
-    const pattern = this.generateKey("*", namespace);
+    const pattern = this.generateKey('*', namespace);
 
     try {
       const keys = await this.executeCommand(() => this.redis!.keys(pattern));
@@ -287,23 +271,20 @@ class RedisService {
 
       return result === keys.length;
     } catch (error) {
-      console.error("Failed to clear cache", error);
+      console.error('Failed to clear cache', error);
       return false;
     }
   }
 
   // Tag association management
-  private async storeTagAssociations(
-    key: string,
-    tags: string[]
-  ): Promise<void> {
+  private async storeTagAssociations(key: string, tags: string[]): Promise<void> {
     for (const tag of tags) {
       const tagKey = this.generateKey(`tag:${tag}`);
       await this.executeCommand(() => this.redis!.sadd(tagKey, key));
     }
   }
 
-  private async removeTagAssociations(key: string): Promise<void> {
+  private async removeTagAssociations(_key: string): Promise<void> {
     // This would require storing tag information in the main entry
     // For now, we'll skip this optimization
   }
@@ -313,14 +294,14 @@ class RedisService {
     try {
       const result = await this.executeCommand(() => this.redis!.ping());
 
-      if (result === "PONG") {
+      if (result === 'PONG') {
         this.lastPing = Date.now();
         return true;
       }
 
       return false;
     } catch (error) {
-      console.error("Redis ping failed", error);
+      console.error('Redis ping failed', error);
       return false;
     }
   }
@@ -329,7 +310,7 @@ class RedisService {
     try {
       const [totalKeys, memoryUsage, info] = await Promise.all([
         this.executeCommand(() => this.redis!.dbsize()) || 0,
-        this.executeCommand(() => this.redis!.info("memory")) || {},
+        this.executeCommand(() => this.redis!.info('memory')) || {},
         this.executeCommand(() => this.redis!.info()) || {},
       ]);
 
@@ -341,7 +322,7 @@ class RedisService {
         lastPing: this.lastPing,
       };
     } catch (error) {
-      console.error("Failed to get Redis stats", error);
+      console.error('Failed to get Redis stats', error);
       return {
         connected: this.isConnected,
         totalKeys: 0,
@@ -363,7 +344,7 @@ class RedisService {
       await this.redis.connect();
       return true;
     } catch (error) {
-      console.error("Failed to connect to Redis", error);
+      console.error('Failed to connect to Redis', error);
       return false;
     }
   }
@@ -373,9 +354,9 @@ class RedisService {
       try {
         await this.redis.disconnect();
         this.isConnected = false;
-        console.log("Redis disconnected");
+        console.log('Redis disconnected');
       } catch (error) {
-        console.error("Failed to disconnect from Redis", error);
+        console.error('Failed to disconnect from Redis', error);
       }
     }
   }

@@ -1,4 +1,4 @@
-import { FastifyRequest } from "fastify";
+import { FastifyRequest } from 'fastify';
 
 interface ExtendFastifyRequest extends FastifyRequest {
   headers: any;
@@ -21,7 +21,7 @@ function queryRequestInfo(request: ExtendFastifyRequest) {
     const {
       offset = 0,
       limit = 5,
-      search = "",
+      search = '',
       ...rest
     } = request.query as {
       offset?: number;

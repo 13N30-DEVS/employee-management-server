@@ -1,6 +1,45 @@
-# Ignore artifacts:
-dist
-test
-package.json
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Generated files
+*.d.ts
+*.js.map
+*.min.js
+
+# Package files
 package-lock.json
-src/models
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env*
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Database
+*.sqlite
+*.db
+
+# Prisma
+prisma/migrations/
+prisma/generated/
+
+# Uploads
+uploads/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

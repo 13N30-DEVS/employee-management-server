@@ -14,6 +14,7 @@
     "test": "npm run build:ts && tsc -p test/tsconfig.json && tap --ts \"test/**/*.test.ts\"",
     "start": "fastify start -a -l info dist/app.js",
     "build": "rm -rf dist && tsc && tsc-alias -p tsconfig.json --outDir dist",
+    "build:ts": "tsc --noEmit",
     "watch:ts": "tsc -w",
     "dev": "npm run build:ts && concurrently -k -p \"[{name}]\" -n \"TypeScript,App\" -c \"yellow.bold,cyan.bold\" \"npm:watch:ts\" \"npm:dev:start\"",
     "dev:local": "nodemon",
@@ -23,10 +24,26 @@
     "migrate": "npx prisma migrate deploy",
     "seed": "npx prisma db seed",
     "migrate:create": "npx prisma migrate dev --create-only",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
+    "lint:check": "eslint src/**/*.ts --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,js,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json,md}\"",
+    "code-quality": "npm run type-check && npm run lint:check && npm run format:check",
+    "fix-all": "npm run lint:fix && npm run format",
     "security:audit": "npm audit",
-    "security:fix": "npm audit fix"
+    "security:fix": "npm audit fix",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
   },
   "keywords": [
     "fastify",
@@ -61,7 +78,6 @@
     "fluent-json-schema": "^4.2.1",
     "husky": "^8.0.0",
     "ioredis": "^5.7.0",
-    "moment": "^2.30.1",
     "nodemailer": "^7.0.3",
     "nodemon": "^3.1.0",
     "pg": "^8.9.0",
@@ -80,12 +96,16 @@
     "@types/nodemailer": "^6.4.17",
     "@types/tap": "^15.0.5",
     "@types/uuid": "^9.0.8",
-    "@typescript-eslint/eslint-plugin": "^7.1.0",
-    "@typescript-eslint/parser": "^7.1.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "concurrently": "^7.0.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.57.0",
-    "pretty-quick": "^3.1.3",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.2.5",
     "sequelize-auto": "^0.8.8",
     "tap": "^16.1.0",
     "ts-node": "^10.9.2",

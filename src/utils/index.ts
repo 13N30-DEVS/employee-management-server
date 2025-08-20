@@ -1,3 +1,3 @@
-import { sequelize, SequelizeOptions } from "./sequelizeInstance";
+import { sequelize, SequelizeOptions } from './sequelizeInstance';
 
 export { sequelize, SequelizeOptions };

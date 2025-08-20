@@ -1,10 +1,8 @@
-import fp from "fastify-plugin";
-import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
-import { Logger } from "@helpers";
+import { FastifyPluginCallback, FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
+import { Logger } from '../helpers/logger';
 
 interface CacheOptions {
   ttl?: number; // Time to live in milliseconds
-  key?: string; // Custom cache key
   tags?: string[]; // Cache tags for invalidation
 }
 
@@ -17,7 +15,6 @@ interface CacheEntry {
 
 class MemoryCache {
   private cache = new Map<string, CacheEntry>();
-  private tagIndex = new Map<string, Set<string>>();
 
   set(key: string, data: any, ttl: number = 300000, tags: string[] = []): void {
     const entry: CacheEntry = {
@@ -28,28 +25,14 @@ class MemoryCache {
     };
 
     this.cache.set(key, entry);
-
-    // Index by tags for invalidation
-    tags.forEach((tag) => {
-      if (!this.tagIndex.has(tag)) {
-        this.tagIndex.set(tag, new Set());
-      }
-      this.tagIndex.get(tag)!.add(key);
-    });
-
-    // Cleanup expired entries
-    this.cleanup();
   }
 
   get(key: string): any | null {
     const entry = this.cache.get(key);
+    if (!entry) return null;
 
-    if (!entry) {
-      return null;
-    }
-
-    // Check if expired
-    if (Date.now() - entry.timestamp > entry.ttl) {
+    const now = Date.now();
+    if (now - entry.timestamp > entry.ttl) {
       this.cache.delete(key);
       return null;
     }
@@ -58,33 +41,33 @@ class MemoryCache {
   }
 
   delete(key: string): boolean {
-    const entry = this.cache.get(key);
-    if (entry) {
-      // Remove from tag index
-      entry.tags.forEach((tag) => {
-        const keys = this.tagIndex.get(tag);
-        if (keys) {
-          keys.delete(key);
-          if (keys.size === 0) {
-            this.tagIndex.delete(tag);
-          }
-        }
-      });
-    }
     return this.cache.delete(key);
   }
 
-  invalidateByTag(tag: string): void {
-    const keys = this.tagIndex.get(tag);
-    if (keys) {
-      keys.forEach((key) => this.cache.delete(key));
-      this.tagIndex.delete(tag);
+  invalidateByTag(tag: string): number {
+    let count = 0;
+    for (const [key, entry] of this.cache.entries()) {
+      if (entry.tags.includes(tag)) {
+        this.cache.delete(key);
+        count++;
+      }
     }
+    return count;
+  }
+
+  invalidateByNamespace(namespace: string): number {
+    let count = 0;
+    for (const [key] of this.cache.entries()) {
+      if (key.startsWith(namespace)) {
+        this.cache.delete(key);
+        count++;
+      }
+    }
+    return count;
   }
 
   clear(): void {
     this.cache.clear();
-    this.tagIndex.clear();
   }
 
   cleanup(): void {
@@ -97,23 +80,27 @@ class MemoryCache {
   }
 
   stats(): { size: number; tagCount: number } {
+    const tags = new Set<string>();
+    for (const entry of this.cache.values()) {
+      entry.tags.forEach(tag => tags.add(tag));
+    }
+
     return {
       size: this.cache.size,
-      tagCount: this.tagIndex.size,
+      tagCount: tags.size,
     };
   }
 }
 
 const memoryCache = new MemoryCache();
 
-export default fp(async (fastify: FastifyInstance) => {
+const cachePlugin: FastifyPluginCallback = async (fastify: FastifyInstance) => {
   // Decorate fastify with cache methods
-  fastify.decorate("cache", {
+  fastify.decorate('cache', {
     get: (key: string) => memoryCache.get(key),
     set: (key: string, data: any, options?: CacheOptions) => {
       const ttl = options?.ttl || 300000; // Default 5 minutes
-      const tags = options?.tags || [];
-      memoryCache.set(key, data, ttl, tags);
+      memoryCache.set(key, data, ttl, options?.tags || []);
     },
     delete: (key: string) => memoryCache.delete(key),
     invalidateByTag: (tag: string) => memoryCache.invalidateByTag(tag),
@@ -121,45 +108,85 @@ export default fp(async (fastify: FastifyInstance) => {
     stats: () => memoryCache.stats(),
   });
 
-  // Cache middleware
-  fastify.addHook(
-    "onRequest",
-    async (request: FastifyRequest, reply: FastifyReply) => {
-      const cacheKey = request.url;
-      const cachedResponse = fastify.cache.get(cacheKey);
+  // Cache middleware with smart caching based on headers
+  fastify.addHook('onRequest', async (request: FastifyRequest, reply: FastifyReply) => {
+    const cacheKey = request.url;
 
-      if (cachedResponse) {
-        Logger.debug(request, `Cache hit for ${cacheKey}`);
-        return reply.send(cachedResponse);
-      }
+    // Check if request explicitly wants fresh data
+    const cacheControl = request.headers['cache-control'];
+    const pragma = request.headers['pragma'];
 
-      // Store original send method
-      const originalSend = reply.send;
-
-      // Override send method to cache successful responses
-      reply.send = function (payload: any) {
-        if (reply.statusCode === 200 && payload) {
-          // Use the cache.set method with options
-          fastify.cache.set(cacheKey, payload, { ttl: 300000, tags: ["api"] });
-          Logger.debug(request, `Cached response for ${cacheKey}`);
-        }
-        return originalSend.call(this, payload);
-      };
+    // Skip cache if explicitly requested
+    if (cacheControl === 'no-cache' || pragma === 'no-cache') {
+      Logger.debug(request, `Cache bypassed for ${cacheKey} - no-cache header`);
+      return;
     }
-  );
+
+    const cachedResponse = fastify.cache.get(cacheKey);
+
+    if (cachedResponse) {
+      Logger.debug(request, `Cache hit for ${cacheKey}`);
+      return reply.send(cachedResponse);
+    }
+
+    // Store original send method
+    const originalSend = reply.send;
+
+    // Override send method to cache successful responses
+    reply.send = function (payload: any) {
+      if (reply.statusCode === 200 && payload) {
+        // Check if response has cache control headers
+        const responseCacheControl = reply.getHeader('Cache-Control');
+
+        // Don't cache if response explicitly says no-cache
+        if (
+          responseCacheControl === 'no-cache' ||
+          responseCacheControl === 'no-store' ||
+          responseCacheControl === 'private'
+        ) {
+          Logger.debug(
+            request,
+            `Cache bypassed for ${cacheKey} - response cache-control: ${responseCacheControl}`
+          );
+        } else {
+          // Smart TTL based on endpoint type
+          let ttl = 300000; // Default 5 minutes
+
+          // Longer cache for static data
+          if (cacheKey.includes('/departments') || cacheKey.includes('/designations')) {
+            ttl = 1800000; // 30 minutes for static data
+          }
+          // Shorter cache for dynamic data
+          else if (cacheKey.includes('/employees') || cacheKey.includes('/users')) {
+            ttl = 60000; // 1 minute for user data
+          }
+          // Very short cache for sensitive data
+          else if (cacheKey.includes('/auth') || cacheKey.includes('/login')) {
+            ttl = 0; // No cache for auth
+          }
+
+          if (ttl > 0) {
+            fastify.cache.set(cacheKey, payload, { ttl, tags: ['api'] });
+            Logger.debug(request, `Cached response for ${cacheKey} with TTL: ${ttl}ms`);
+          }
+        }
+      }
+      return originalSend.call(this, payload);
+    };
+  });
 
   // Cache invalidation endpoint (protected if authentication is available)
   fastify.get(
-    "/admin/cache/stats",
+    '/admin/cache/stats',
     {
       preHandler: fastify.authenticate ? [fastify.authenticate] : [],
       schema: {
         response: {
           200: {
-            type: "object",
+            type: 'object',
             properties: {
-              size: { type: "number" },
-              tagCount: { type: "number" },
+              size: { type: 'number' },
+              tagCount: { type: 'number' },
             },
           },
         },
@@ -172,14 +199,14 @@ export default fp(async (fastify: FastifyInstance) => {
   );
 
   fastify.post(
-    "/admin/cache/clear",
+    '/admin/cache/clear',
     {
       preHandler: fastify.authenticate ? [fastify.authenticate] : [],
       schema: {
         body: {
-          type: "object",
+          type: 'object',
           properties: {
-            tag: { type: "string" },
+            tag: { type: 'string' },
           },
         },
       },
@@ -193,8 +220,8 @@ export default fp(async (fastify: FastifyInstance) => {
         return reply.send({ message: `Cache invalidated for tag: ${tag}` });
       } else {
         fastify.cache.clear();
-        Logger.info(request, "Cache cleared");
-        return reply.send({ message: "Cache cleared" });
+        Logger.info(request, 'Cache cleared');
+        return reply.send({ message: 'Cache cleared' });
       }
     }
   );
@@ -205,17 +232,31 @@ export default fp(async (fastify: FastifyInstance) => {
   }, 60000); // Cleanup every minute
 
   // Log initialization without request context
-  console.log("Cache plugin initialized");
-});
+  const mockRequest = {
+    id: 'cache-plugin-init',
+    method: 'GET',
+    url: '/cache/init',
+    headers: { 'user-agent': 'cache-plugin' },
+    ip: '127.0.0.1',
+    hostname: 'localhost',
+    protocol: 'http',
+    query: {},
+    params: {},
+    body: null,
+  } as any;
+  Logger.info(mockRequest, 'Cache plugin initialized');
+};
+
+export default cachePlugin;
 
 // Extend FastifyInstance interface
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyInstance {
     cache: {
-      get: (key: string) => any | null;
-      set: (key: string, data: any, options?: CacheOptions) => void;
-      delete: (key: string) => boolean;
-      invalidateByTag: (tag: string) => void;
+      get: (_key: string) => any | null;
+      set: (_key: string, _data: any, _options?: CacheOptions) => void;
+      delete: (_key: string) => boolean;
+      invalidateByTag: (_tag: string) => void;
       clear: () => void;
       stats: () => { size: number; tagCount: number };
     };

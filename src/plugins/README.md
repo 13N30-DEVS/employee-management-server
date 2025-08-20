@@ -16,26 +16,26 @@ The plugin loading order is managed in `src/plugins/index.ts`:
 
 ```typescript
 // 1. Core plugins (helmet, cors, etc.)
-await fastify.register(import("./helmet"));
-await fastify.register(import("./cors"));
-await fastify.register(import("./sensible"));
-await fastify.register(import("./multipart"));
+await fastify.register(import('./helmet'));
+await fastify.register(import('./cors'));
+await fastify.register(import('./sensible'));
+await fastify.register(import('./multipart'));
 
 // 2. JWT plugin (provides authentication)
-await fastify.register(import("./jwt"));
+await fastify.register(import('./jwt'));
 
 // 3. Redis plugin (provides caching)
-await fastify.register(import("./redis"));
+await fastify.register(import('./redis'));
 
 // 4. Feature plugins (rate limiting, database, etc.)
-await fastify.register(import("./ratelimit"));
-await fastify.register(import("./sequelize"));
-await fastify.register(import("./swagger"));
+await fastify.register(import('./ratelimit'));
+await fastify.register(import('./sequelize'));
+await fastify.register(import('./swagger'));
 
 // 5. Feature plugins that may depend on JWT
-await fastify.register(import("./cache"));
-await fastify.register(import("./health"));
-await fastify.register(import("./security"));
+await fastify.register(import('./cache'));
+await fastify.register(import('./health'));
+await fastify.register(import('./security'));
 ```
 
 ## 🔌 **Available Plugins**
@@ -228,7 +228,7 @@ Plugins can be configured by modifying their respective files or by passing opti
 2. Use the `fastify-plugin` wrapper:
 
    ```typescript
-   import fp from "fastify-plugin";
+   import fp from 'fastify-plugin';
 
    export default fp(async (fastify: FastifyInstance) => {
      // Plugin logic here
@@ -251,17 +251,17 @@ Plugins can be configured by modifying their respective files or by passing opti
 Each plugin can be tested independently:
 
 ```typescript
-import { build } from "../app";
+import { build } from '../app';
 
-describe("Plugin Tests", () => {
+describe('Plugin Tests', () => {
   let app: FastifyInstance;
 
   beforeEach(async () => {
     app = await build();
   });
 
-  it("should register plugin correctly", () => {
-    expect(app.hasPlugin("plugin-name")).toBe(true);
+  it('should register plugin correctly', () => {
+    expect(app.hasPlugin('plugin-name')).toBe(true);
   });
 });
 ```
@@ -271,8 +271,8 @@ describe("Plugin Tests", () => {
 Test plugins together:
 
 ```typescript
-describe("Plugin Integration", () => {
-  it("should work with authentication", async () => {
+describe('Plugin Integration', () => {
+  it('should work with authentication', async () => {
     // Test authenticated endpoints
   });
 });

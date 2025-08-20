@@ -1,6 +1,6 @@
-import { FastifyReply, FastifyRequest } from "fastify";
-import { singleFileUpload } from "@interactors";
-import { Logger, handleResponse, responseType } from "@helpers";
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { singleFileUpload } from '@interactors';
+import { Logger, handleResponse, responseType } from '@helpers';
 
 /**
  * Handles the file upload request, processes the file from the request body,

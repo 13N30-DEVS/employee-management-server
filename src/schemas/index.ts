@@ -1,5 +1,5 @@
 // Auth schemas
-export * from "./auth";
+export * from './auth';
 
 // Common schemas
-export * from "./common";
+export * from './common';

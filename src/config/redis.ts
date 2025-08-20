@@ -1,8 +1,8 @@
-import { env } from "./env";
+import { env } from './env';
 
 export const REDIS_CONFIG = {
   // Redis connection
-  HOST: env.REDIS_HOST || "localhost",
+  HOST: env.REDIS_HOST || 'localhost',
   PORT: env.REDIS_PORT || 6379,
   PASSWORD: env.REDIS_PASSWORD || undefined,
   DB: env.REDIS_DB || 0,
@@ -22,7 +22,7 @@ export const REDIS_CONFIG = {
   MAX_TTL: env.REDIS_MAX_TTL || 86400, // 24 hours in seconds
 
   // Key prefixes
-  KEY_PREFIX: env.REDIS_KEY_PREFIX || "ems:",
+  KEY_PREFIX: env.REDIS_KEY_PREFIX || 'ems:',
 
   // Cluster settings
   ENABLE_CLUSTER: env.REDIS_ENABLE_CLUSTER,
@@ -32,7 +32,7 @@ export const REDIS_CONFIG = {
   ENABLE_SENTINEL: env.REDIS_ENABLE_SENTINEL,
   SENTINEL_HOSTS: env.REDIS_SENTINEL_HOSTS || [],
   SENTINEL_PASSWORD: env.REDIS_SENTINEL_PASSWORD || undefined,
-  SENTINEL_MASTER_NAME: env.REDIS_SENTINEL_MASTER_NAME || "mymaster",
+  SENTINEL_MASTER_NAME: env.REDIS_SENTINEL_MASTER_NAME || 'mymaster',
 
   // SSL settings
   ENABLE_SSL: env.REDIS_ENABLE_SSL,

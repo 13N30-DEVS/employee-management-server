@@ -1,4 +1,4 @@
-import { Logger, processNestedObjects } from "@helpers";
+import { Logger, processNestedObjects } from '@helpers';
 
 /**
  * Extracts relevant parameters from a FastifyRequest object.
@@ -18,7 +18,7 @@ function postRequestInfo(request: any) {
     };
   } catch (error: any) {
     Logger.error(error.message, error);
-    throw new Error("Failed to extract request parameters.");
+    throw new Error('Failed to extract request parameters.');
   }
 }
 
