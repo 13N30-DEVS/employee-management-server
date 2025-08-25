@@ -90,14 +90,16 @@ export const PAGINATION_CONSTANTS = {
 export const TIME_CONSTANTS = {
   FORMATS: {
     TIME_24H: 'HH:mm:ss',
+    TIME_24H_SHORT: 'HH:mm',
     TIME_12H: 'h:mm a',
+    TIME_12H_SHORT: 'h a',
     DATE: 'yyyy-MM-dd',
     DATETIME: 'yyyy-MM-dd HH:mm:ss',
     ISO: "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
   },
   REGEX: {
-    TIME_12H: /^(0[1-9]|1[0-2]):[0-5]\d [APMapm]{2}$/,
-    TIME_24H: /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/,
+    TIME_12H: /^(0?[1-9]|1[0-2])(?::[0-5]\d)? [APMapm]{2}$/,
+    TIME_24H: /^([01]?[0-9]|2[0-3]):[0-5][0-9](?::[0-5][0-9])?$/,
   },
 } as const;
 

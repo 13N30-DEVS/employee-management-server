@@ -60,10 +60,16 @@ export const signupSchema = z.object({
         description: z.string().max(200, 'Description too long').optional(),
         startTime: z
           .string()
-          .regex(constants.TIME_CONSTANTS.REGEX.TIME_24H, 'Invalid start time format (HH:MM)'),
+          .regex(
+            constants.TIME_CONSTANTS.REGEX.TIME_24H,
+            'Invalid start time format (HH:MM or HH:MM:SS)'
+          ),
         endTime: z
           .string()
-          .regex(constants.TIME_CONSTANTS.REGEX.TIME_24H, 'Invalid end time format (HH:MM)'),
+          .regex(
+            constants.TIME_CONSTANTS.REGEX.TIME_24H,
+            'Invalid end time format (HH:MM or HH:MM:SS)'
+          ),
       })
     )
     .min(1, 'At least one shift is required'),
