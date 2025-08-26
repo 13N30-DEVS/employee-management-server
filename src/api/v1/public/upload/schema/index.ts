@@ -12,16 +12,15 @@ const createResponse: JSONSchema = Schema.object()
   .valueOf() as JSONSchema;
 
 const requestBody = Schema.object()
-  .prop('file', Schema.raw({ description: 'Multipart file' }))
+  .prop('file', Schema.raw({ description: 'Multipart image file (JPEG, PNG, GIF, WebP)' }))
   .required(['file'])
   .valueOf() as JSONSchema;
 
-const UPLOAD = {
-  description: 'Upload private file with authentication. Requires workspace ID and valid token.',
-  tags: ['UPLOADS', 'PRIVATE'],
-  headers: Schema.ref('commonHeaders').valueOf() as JSONSchema,
+const UPLOAD_WORKSPACE_LOGO = {
+  description: 'Upload workspace logo without authentication. Accepts image files up to 2MB.',
+  tags: ['UPLOADS', 'PUBLIC'],
   body: requestBody,
   response: makeResponseSchema(createResponse),
 };
 
-export default { UPLOAD };
+export default { UPLOAD_WORKSPACE_LOGO };
