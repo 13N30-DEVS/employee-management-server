@@ -77,7 +77,9 @@ export class UploadService {
       if (!allowedMimeTypes.includes(file.mimetype)) {
         return handleResponse(request, reply, responseType?.BAD_REQUEST, {
           error: {
-            message: `File type ${file.mimetype} is not allowed. Allowed types: ${allowedMimeTypes.join(', ')}`,
+            message: `File type ${
+              file.mimetype
+            } is not allowed. Allowed types: ${allowedMimeTypes.join(', ')}`,
           },
         });
       }

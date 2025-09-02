@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { LoginInput, SignupInput } from '@schemas';
 import { AuthenticatedFastifyInstance } from '@types';
 import { constants } from '@config';
-import { AppError, NotFoundError, AuthenticationError, ConflictError } from '@helpers';
+import { AppError, NotFoundError, AuthenticationError, Logger, ConflictError } from '@helpers';
 
 // Return type interfaces
 interface WorkspaceResponse {
@@ -221,5 +221,21 @@ export const SignUp = async (
     await transaction.rollback();
     console.error(error instanceof Error ? error.message : 'Unknown error', error);
     throw error;
+  }
+};
+
+/**
+ * Verifies whether a user with the given email ID exists.
+ * @param {string} emailId - The email ID to verify.
+ * @returns {Promise<boolean>} - A promise that resolves to true if the user exists, false if not.
+ * @throws {Error} - Throws an error if the query fails.
+ */
+export const verifyEmail = async (emailId: string): Promise<boolean> => {
+  try {
+    const user = await Auth.findByEmailId({ emailId });
+    return user ? !!user : false;
+  } catch (error: any) {
+    Logger.error(error.message, error);
+    throw new Error(error.message);
   }
 };

@@ -11,6 +11,11 @@ const authRoute: FastifyPluginAsync = async (fastify): Promise<void> => {
   fastify.post('/signUp', { schema: schema.SIGN_UP }, (request, reply) =>
     handler.signUp(request, reply, fastify)
   );
+
+  // Email check
+  fastify.post('/verifyEmail', { schema: schema.CHECK_EMAIL }, (request, reply) =>
+    handler.verifyEmailHandler(request, reply)
+  );
 };
 
 export default authRoute;

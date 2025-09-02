@@ -22,9 +22,9 @@ function getTimeString(date: Date): string {
   const hours: number = date.getHours();
   const minutes: number = date.getMinutes();
   const seconds: number = date.getSeconds();
-  return `${hours.toString().padStart(2, '0')}:${minutes
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds
     .toString()
-    .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    .padStart(2, '0')}`;
 }
 /**
  * Converts a given date to a string in the format "Sat Mar 28 2020".
