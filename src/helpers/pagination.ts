@@ -39,7 +39,7 @@ const createMockRequest = () =>
     params: {},
     body: null,
     user: undefined,
-  } as any);
+  }) as any;
 
 /**
  * Generates a new URL by updating or setting the "offset" and "limit" query parameters.

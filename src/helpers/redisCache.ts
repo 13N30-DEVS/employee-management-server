@@ -52,7 +52,7 @@ const createMockRequest = () =>
     params: {},
     body: null,
     user: undefined,
-  } as any);
+  }) as any;
 
 export class RedisCacheHelper {
   private static readonly cachePatterns: CachePatterns = {
