@@ -132,7 +132,9 @@ export const s3Upload = async (file: any, request?: any): Promise<S3UploadResult
     await s3.putObject(s3Params).promise();
 
     // Generate file URL (consider using presigned URLs for private files)
-    const fileURL = `https://${env.AWS_BUCKET_NAME}.${env.S3_URL}/${s3Params.Key}`;
+    // Remove protocol from S3_URL to avoid double https://
+    const s3Host = env.S3_URL.replace(/^https?:\/\//, '');
+    const fileURL = `https://${env.AWS_BUCKET_NAME}.${s3Host}/${s3Params.Key}`;
 
     Logger.info(request, `File uploaded successfully: ${fileName}`);
 
