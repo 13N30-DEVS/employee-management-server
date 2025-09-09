@@ -17,7 +17,7 @@ function postRequestInfo(request: any) {
       ...body,
     };
   } catch (error: any) {
-    Logger.error(error.message, error);
+    console.error('PostRequest mapper error:', error.message, error);
     throw new Error('Failed to extract request parameters.');
   }
 }

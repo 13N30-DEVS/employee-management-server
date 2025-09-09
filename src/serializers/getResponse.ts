@@ -60,7 +60,7 @@ function preparePagination(options: GetServicePayload): GetServiceResponse {
       ...paginationResult,
     };
   } catch (error: any) {
-    Logger.error(error.message, error);
+    console.error('GetResponse serializer error:', error.message, error);
     throw new Error('Failed to extract pagination parameters from the response.');
   }
 }

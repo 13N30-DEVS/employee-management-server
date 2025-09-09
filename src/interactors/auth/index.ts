@@ -235,7 +235,7 @@ export const verifyEmail = async (emailId: string): Promise<boolean> => {
     const user = await Auth.findByEmailId({ emailId });
     return user ? !!user : false;
   } catch (error: any) {
-    Logger.error(error.message, error);
+    console.error('Auth interactor error:', error.message, error);
     throw new Error(error.message);
   }
 };

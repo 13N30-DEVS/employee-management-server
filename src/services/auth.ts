@@ -202,7 +202,7 @@ class Auth {
 
       return userData ? userData.toJSON() : null;
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }
@@ -239,7 +239,7 @@ class Auth {
 
       return workspaceData.toJSON();
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }
@@ -271,7 +271,7 @@ class Auth {
 
       return userData.toJSON();
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }
@@ -310,7 +310,7 @@ class Auth {
 
       return employeeInfoData.toJSON();
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }
@@ -347,7 +347,7 @@ class Auth {
 
       return workspaceDeptData.toJSON();
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }
@@ -384,7 +384,7 @@ class Auth {
 
       return workspaceDesigData.toJSON();
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }
@@ -425,7 +425,7 @@ class Auth {
 
       return workspaceShiftData.toJSON();
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Auth service error:', error.message, error);
       throw new Error(error.message);
     }
   }

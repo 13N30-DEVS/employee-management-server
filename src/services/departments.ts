@@ -46,7 +46,7 @@ class Department {
         totalCount: count,
       };
     } catch (error: any) {
-      Logger.error(error.message, error);
+      console.error('Departments service error:', error.message, error);
       throw new Error(error.message);
     }
   }

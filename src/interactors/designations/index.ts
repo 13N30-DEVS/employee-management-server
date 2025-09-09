@@ -38,7 +38,7 @@ export const getDesignations = async (
       totalCount,
     };
   } catch (error: any) {
-    Logger.error(error.message, error);
+    console.error('Designations interactor error:', error.message, error);
     throw new Error(error.message);
   }
 };

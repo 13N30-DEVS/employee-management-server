@@ -42,7 +42,7 @@ export const getDepartments = async (
       totalCount,
     };
   } catch (error: any) {
-    Logger.error(error.message, error);
+    console.error('Departments interactor error:', error.message, error);
     throw new Error(error.message);
   }
 };
