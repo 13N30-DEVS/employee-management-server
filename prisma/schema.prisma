@@ -11,8 +11,8 @@ datasource db {
 
 model master_user_roles {
   id                     Int                      @id
-  name                   String?                  @db.VarChar
-  description            String?                  @db.VarChar
+  name                   String?                  @db.VarChar(255)
+  description            String?                  @db.VarChar(255)
   is_active              Boolean?                 @default(true)
   created_at             DateTime?                @db.Timestamp(6)
   updated_at             DateTime?                @db.Timestamp(6)
@@ -24,8 +24,8 @@ model master_user_roles {
 
 model master_user_statuses {
   id          Int       @id
-  name        String?   @db.VarChar
-  description String?   @db.VarChar
+  name        String?   @db.VarChar(255)
+  description String?   @db.VarChar(255)
   is_active   Boolean?  @default(true)
   created_at  DateTime? @db.Timestamp(6)
   updated_at  DateTime? @db.Timestamp(6)
@@ -35,89 +35,123 @@ model master_user_statuses {
 }
 
 model users {
-  id                    String                  @id @db.Uuid
-  email_id              String?                 @db.VarChar(255)
-  password_hash         String?                 @db.VarChar(255)
-  role                  Int?
-  status                Int?
-  is_active             Boolean?                @default(true)
-  created_by            String?                 @db.Uuid
-  created_at            DateTime?               @db.Timestamp(6)
-  updated_by            String?                 @db.Uuid
-  updated_at            DateTime?               @db.Timestamp(6)
-  master_user_roles     master_user_roles?      @relation(fields: [role], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  master_user_statuses  master_user_statuses?   @relation(fields: [status], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  employee_informations employee_informations[]
+  id                                                              String                   @id @db.Uuid
+  email_id                                                        String?                  @db.VarChar(255)
+  password_hash                                                   String?                  @db.VarChar(255)
+  role                                                            Int?
+  status                                                          Int?
+  is_active                                                       Boolean?                 @default(true)
+  created_by                                                      String?                  @db.Uuid
+  created_at                                                      DateTime?                @db.Timestamp(6)
+  updated_by                                                      String?                  @db.Uuid
+  updated_at                                                      DateTime?                @db.Timestamp(6)
+  users_users_created_byTousers                                   users?                   @relation("users_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_users_users_created_byTousers                             users[]                  @relation("users_created_byTousers")
+  master_user_roles                                               master_user_roles?       @relation(fields: [role], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_user_statuses                                            master_user_statuses?    @relation(fields: [status], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_users_updated_byTousers                                   users?                   @relation("users_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_users_users_updated_byTousers                             users[]                  @relation("users_updated_byTousers")
+  employee_details_employee_details_created_byTousers             employee_details[]       @relation("employee_details_created_byTousers")
+  employee_details_employee_details_deleted_byTousers             employee_details[]       @relation("employee_details_deleted_byTousers")
+  employee_details_employee_details_updated_byTousers             employee_details[]       @relation("employee_details_updated_byTousers")
+  employee_informations_employee_informations_created_byTousers   employee_informations[]  @relation("employee_informations_created_byTousers")
+  employee_informations_employee_informations_deleted_byTousers   employee_informations[]  @relation("employee_informations_deleted_byTousers")
+  employee_informations_employee_informations_updated_byTousers   employee_informations[]  @relation("employee_informations_updated_byTousers")
+  employee_informations                                           employee_informations[]
+  employee_role_mappings_employee_role_mappings_created_byTousers employee_role_mappings[] @relation("employee_role_mappings_created_byTousers")
+  employee_role_mappings_employee_role_mappings_deleted_byTousers employee_role_mappings[] @relation("employee_role_mappings_deleted_byTousers")
+  employee_role_mappings_employee_role_mappings_updated_byTousers employee_role_mappings[] @relation("employee_role_mappings_updated_byTousers")
+  workspace_departments_workspace_departments_created_byTousers   workspace_departments[]  @relation("workspace_departments_created_byTousers")
+  workspace_departments_workspace_departments_deleted_byTousers   workspace_departments[]  @relation("workspace_departments_deleted_byTousers")
+  workspace_departments_workspace_departments_updated_byTousers   workspace_departments[]  @relation("workspace_departments_updated_byTousers")
+  workspace_designations_workspace_designations_created_byTousers workspace_designations[] @relation("workspace_designations_created_byTousers")
+  workspace_designations_workspace_designations_deleted_byTousers workspace_designations[] @relation("workspace_designations_deleted_byTousers")
+  workspace_designations_workspace_designations_updated_byTousers workspace_designations[] @relation("workspace_designations_updated_byTousers")
+  workspace_shifts_workspace_shifts_created_byTousers             workspace_shifts[]       @relation("workspace_shifts_created_byTousers")
+  workspace_shifts_workspace_shifts_deleted_byTousers             workspace_shifts[]       @relation("workspace_shifts_deleted_byTousers")
+  workspace_shifts_workspace_shifts_updated_byTousers             workspace_shifts[]       @relation("workspace_shifts_updated_byTousers")
+  workspaces_workspaces_created_byTousers                         workspaces[]             @relation("workspaces_created_byTousers")
+  workspaces_workspaces_deleted_byTousers                         workspaces[]             @relation("workspaces_deleted_byTousers")
+  workspaces_workspaces_updated_byTousers                         workspaces[]             @relation("workspaces_updated_byTousers")
 
   @@schema("auth")
 }
 
 model employee_details {
-  id                    String                 @id @db.Uuid
-  emp_id                String?                @db.Uuid
-  date_of_birth         DateTime?              @db.Date
-  addresses             String?
-  is_active             Boolean?               @default(true)
-  is_deleted            Boolean?               @default(false)
-  created_by            String?                @db.Uuid
-  created_at            DateTime?              @db.Timestamp(6)
-  updated_by            String?                @db.Uuid
-  updated_at            DateTime?              @db.Timestamp(6)
-  deleted_by            String?                @db.Uuid
-  deleted_at            DateTime?              @db.Timestamp(6)
-  employee_informations employee_informations? @relation(fields: [emp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                       String                 @id @db.Uuid
+  emp_id                                   String?                @db.Uuid
+  date_of_birth                            DateTime?              @db.Date
+  addresses                                String?
+  is_active                                Boolean?               @default(true)
+  is_deleted                               Boolean?               @default(false)
+  created_by                               String?                @db.Uuid
+  created_at                               DateTime?              @db.Timestamp(6)
+  updated_by                               String?                @db.Uuid
+  updated_at                               DateTime?              @db.Timestamp(6)
+  deleted_by                               String?                @db.Uuid
+  deleted_at                               DateTime?              @db.Timestamp(6)
+  users_employee_details_created_byTousers users?                 @relation("employee_details_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_employee_details_deleted_byTousers users?                 @relation("employee_details_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_informations                    employee_informations? @relation(fields: [emp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_employee_details_updated_byTousers users?                 @relation("employee_details_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
 
 model employee_informations {
-  id                     String                   @id @db.Uuid
-  user_id                String                   @db.Uuid
-  workspace_id           String?                  @db.Uuid
-  name                   String?                  @db.VarChar
-  gender                 Int?
-  email                  String?                  @unique @db.VarChar
-  mobile_number          String?                  @unique @db.VarChar
-  profile_pic            String?                  @db.VarChar
-  is_active              Boolean?                 @default(true)
-  is_deleted             Boolean?                 @default(false)
-  created_by             String?                  @db.Uuid
-  created_at             DateTime?                @db.Timestamp(6)
-  updated_by             String?                  @db.Uuid
-  updated_at             DateTime?                @db.Timestamp(6)
-  deleted_by             String?                  @db.Uuid
-  deleted_at             DateTime?                @db.Timestamp(6)
-  employee_details       employee_details[]
-  master_genders         master_genders?          @relation(fields: [gender], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  users                  users                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  workspaces             workspaces?              @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  employee_role_mappings employee_role_mappings[]
+  id                                            String                   @id @db.Uuid
+  user_id                                       String                   @db.Uuid
+  workspace_id                                  String?                  @db.Uuid
+  name                                          String?                  @db.VarChar(255)
+  gender                                        Int?
+  email                                         String?                  @unique @db.VarChar(255)
+  mobile_number                                 String?                  @unique @db.VarChar(255)
+  profile_pic                                   String?                  @db.VarChar(255)
+  is_active                                     Boolean?                 @default(true)
+  is_deleted                                    Boolean?                 @default(false)
+  created_by                                    String?                  @db.Uuid
+  created_at                                    DateTime?                @db.Timestamp(6)
+  updated_by                                    String?                  @db.Uuid
+  updated_at                                    DateTime?                @db.Timestamp(6)
+  deleted_by                                    String?                  @db.Uuid
+  deleted_at                                    DateTime?                @db.Timestamp(6)
+  employee_details                              employee_details[]
+  users_employee_informations_created_byTousers users?                   @relation("employee_informations_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_employee_informations_deleted_byTousers users?                   @relation("employee_informations_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_genders                                master_genders?          @relation(fields: [gender], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_employee_informations_updated_byTousers users?                   @relation("employee_informations_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users                                         users                    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces                                    workspaces?              @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_role_mappings                        employee_role_mappings[]
 
   @@schema("public")
 }
 
 model employee_role_mappings {
-  id                    String                 @id @db.Uuid
-  emp_id                String?                @db.Uuid
-  role_id               Int?
-  is_active             Boolean?               @default(true)
-  is_deleted            Boolean?               @default(false)
-  created_by            String?                @db.Uuid
-  created_at            DateTime?              @db.Timestamp(6)
-  updated_by            String?                @db.Uuid
-  updated_at            DateTime?              @db.Timestamp(6)
-  deleted_by            String?                @db.Uuid
-  deleted_at            DateTime?              @db.Timestamp(6)
-  employee_informations employee_informations? @relation(fields: [emp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  master_user_roles     master_user_roles?     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                             String                 @id @db.Uuid
+  emp_id                                         String?                @db.Uuid
+  role_id                                        Int?
+  is_active                                      Boolean?               @default(true)
+  is_deleted                                     Boolean?               @default(false)
+  created_by                                     String?                @db.Uuid
+  created_at                                     DateTime?              @db.Timestamp(6)
+  updated_by                                     String?                @db.Uuid
+  updated_at                                     DateTime?              @db.Timestamp(6)
+  deleted_by                                     String?                @db.Uuid
+  deleted_at                                     DateTime?              @db.Timestamp(6)
+  users_employee_role_mappings_created_byTousers users?                 @relation("employee_role_mappings_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_employee_role_mappings_deleted_byTousers users?                 @relation("employee_role_mappings_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  employee_informations                          employee_informations? @relation(fields: [emp_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_user_roles                              master_user_roles?     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_employee_role_mappings_updated_byTousers users?                 @relation("employee_role_mappings_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
 
 model master_departments {
   id                    Int                     @id
-  name                  String?                 @db.VarChar
-  description           String?                 @db.VarChar
+  name                  String?                 @db.VarChar(255)
+  description           String?                 @db.VarChar(255)
   is_active             Boolean?                @default(true)
   created_at            DateTime?               @db.Timestamp(6)
   updated_at            DateTime?               @db.Timestamp(6)
@@ -128,8 +162,8 @@ model master_departments {
 
 model master_designations {
   id                     Int                      @id
-  name                   String?                  @db.VarChar
-  description            String?                  @db.VarChar
+  name                   String?                  @db.VarChar(255)
+  description            String?                  @db.VarChar(255)
   is_active              Boolean?                 @default(true)
   created_at             DateTime?                @db.Timestamp(6)
   updated_at             DateTime?                @db.Timestamp(6)
@@ -140,8 +174,8 @@ model master_designations {
 
 model master_genders {
   id                    Int                     @id
-  name                  String?                 @db.VarChar
-  description           String?                 @db.VarChar
+  name                  String?                 @db.VarChar(255)
+  description           String?                 @db.VarChar(255)
   is_active             Boolean?                @default(true)
   created_at            DateTime?               @db.Timestamp(6)
   updated_at            DateTime?               @db.Timestamp(6)
@@ -151,49 +185,87 @@ model master_genders {
 }
 
 model workspace_departments {
-  id                 String              @id @db.Uuid
-  workspace_id       String?             @db.Uuid
-  department_id      Int?
-  is_active          Boolean?            @default(true)
-  created_by         String?             @db.Uuid
-  created_at         DateTime?           @db.Timestamp(6)
-  updated_by         String?             @db.Uuid
-  updated_at         DateTime?           @db.Timestamp(6)
-  master_departments master_departments? @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  workspaces         workspaces?         @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                            String              @id @db.Uuid
+  workspace_id                                  String?             @db.Uuid
+  department_id                                 Int?
+  is_active                                     Boolean?            @default(true)
+  is_deleted                                    Boolean?            @default(false)
+  created_by                                    String?             @db.Uuid
+  created_at                                    DateTime?           @db.Timestamp(6)
+  updated_by                                    String?             @db.Uuid
+  updated_at                                    DateTime?           @db.Timestamp(6)
+  deleted_by                                    String?             @db.Uuid
+  deleted_at                                    DateTime?           @db.Timestamp(6)
+  users_workspace_departments_created_byTousers users?              @relation("workspace_departments_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspace_departments_deleted_byTousers users?              @relation("workspace_departments_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_departments                            master_departments? @relation(fields: [department_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspace_departments_updated_byTousers users?              @relation("workspace_departments_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces                                    workspaces?         @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
 
 model workspace_designations {
-  id                  String               @id @db.Uuid
-  workspace_id        String?              @db.Uuid
-  designation_id      Int?
-  is_active           Boolean?             @default(true)
-  created_by          String?              @db.Uuid
-  created_at          DateTime?            @db.Timestamp(6)
-  updated_by          String?              @db.Uuid
-  updated_at          DateTime?            @db.Timestamp(6)
-  master_designations master_designations? @relation(fields: [designation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  workspaces          workspaces?          @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                             String               @id @db.Uuid
+  workspace_id                                   String?              @db.Uuid
+  designation_id                                 Int?
+  is_active                                      Boolean?             @default(true)
+  is_deleted                                     Boolean?             @default(false)
+  created_by                                     String?              @db.Uuid
+  created_at                                     DateTime?            @db.Timestamp(6)
+  updated_by                                     String?              @db.Uuid
+  updated_at                                     DateTime?            @db.Timestamp(6)
+  deleted_by                                     String?              @db.Uuid
+  deleted_at                                     DateTime?            @db.Timestamp(6)
+  users_workspace_designations_created_byTousers users?               @relation("workspace_designations_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspace_designations_deleted_byTousers users?               @relation("workspace_designations_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  master_designations                            master_designations? @relation(fields: [designation_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspace_designations_updated_byTousers users?               @relation("workspace_designations_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces                                     workspaces?          @relation(fields: [workspace_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
 
 model workspaces {
-  id                     String                   @id @db.Uuid
-  workspace_name         String?                  @db.VarChar
-  is_active              Boolean?                 @default(true)
-  is_deleted             Boolean?                 @default(false)
-  created_by             String?                  @db.Uuid
-  created_at             DateTime?                @db.Timestamp(6)
-  updated_by             String?                  @db.Uuid
-  updated_at             DateTime?                @db.Timestamp(6)
-  deleted_by             String?                  @db.Uuid
-  deleted_at             DateTime?                @db.Timestamp(6)
-  employee_informations  employee_informations[]
-  workspace_departments  workspace_departments[]
-  workspace_designations workspace_designations[]
+  id                                 String                   @id @db.Uuid
+  workspace_name                     String?                  @db.VarChar(255)
+  workspace_logo                     String?                  @db.VarChar(255)
+  is_active                          Boolean?                 @default(true)
+  is_deleted                         Boolean?                 @default(false)
+  created_by                         String?                  @db.Uuid
+  created_at                         DateTime?                @db.Timestamp(6)
+  updated_by                         String?                  @db.Uuid
+  updated_at                         DateTime?                @db.Timestamp(6)
+  deleted_by                         String?                  @db.Uuid
+  deleted_at                         DateTime?                @db.Timestamp(6)
+  employee_informations              employee_informations[]
+  workspace_departments              workspace_departments[]
+  workspace_designations             workspace_designations[]
+  users_workspaces_created_byTousers users?                   @relation("workspaces_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspaces_deleted_byTousers users?                   @relation("workspaces_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspaces_updated_byTousers users?                   @relation("workspaces_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("public")
+}
+
+model workspace_shifts {
+  id                                       String    @id @db.Uuid
+  workspace_id                             String?   @db.Uuid
+  name                                     String?   @db.VarChar(255)
+  description                              String?   @db.VarChar(255)
+  start_time                               DateTime  @db.Time(6)
+  end_time                                 DateTime  @db.Time(6)
+  is_active                                Boolean?  @default(true)
+  is_deleted                               Boolean?  @default(false)
+  created_by                               String?   @db.Uuid
+  created_at                               DateTime? @db.Timestamp(6)
+  updated_by                               String?   @db.Uuid
+  updated_at                               DateTime? @db.Timestamp(6)
+  deleted_by                               String?   @db.Uuid
+  deleted_at                               DateTime? @db.Timestamp(6)
+  users_workspace_shifts_created_byTousers users?    @relation("workspace_shifts_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspace_shifts_deleted_byTousers users?    @relation("workspace_shifts_deleted_byTousers", fields: [deleted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_workspace_shifts_updated_byTousers users?    @relation("workspace_shifts_updated_byTousers", fields: [updated_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("public")
 }
