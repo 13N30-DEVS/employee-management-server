@@ -23,6 +23,8 @@
     "model": "npx ts-node ./src/scripts/auto.ts",
     "migrate": "npx prisma migrate deploy",
     "seed": "npx prisma db seed",
+    "db:pull": "npx prisma db pull",
+    "generate": "npx prisma generate",
     "migrate:create": "npx prisma migrate dev --create-only",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
