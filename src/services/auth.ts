@@ -1,4 +1,3 @@
-import { Logger } from '@helpers';
 import {
   employee_information,
   master_user_role,

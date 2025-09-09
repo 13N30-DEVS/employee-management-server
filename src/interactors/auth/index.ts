@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { LoginInput, SignupInput } from '@schemas';
 import { AuthenticatedFastifyInstance } from '@types';
 import { constants } from '@config';
-import { AppError, NotFoundError, AuthenticationError, Logger, ConflictError } from '@helpers';
+import { AppError, NotFoundError, AuthenticationError, ConflictError } from '@helpers';
 
 // Return type interfaces
 interface WorkspaceResponse {

@@ -1,4 +1,4 @@
-import { Logger, processNestedObjects } from '@helpers';
+import { processNestedObjects } from '@helpers';
 
 /**
  * Extracts relevant parameters from a FastifyRequest object.

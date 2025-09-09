@@ -1,4 +1,4 @@
-import { Logger, pagination } from '@helpers';
+import { pagination } from '@helpers';
 
 interface GetServicePayload {
   result: {

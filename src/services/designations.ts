@@ -1,4 +1,3 @@
-import { Logger } from '@helpers';
 import { master_designation } from '@models';
 import { Op } from 'sequelize';
 
