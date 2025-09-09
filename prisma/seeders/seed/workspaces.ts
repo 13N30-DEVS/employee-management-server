@@ -9,6 +9,7 @@ export const Workspaces: {
     {
       id: "550e8400-e29b-41d4-a716-446655440000", // Default workspace ID
       workspace_name: "Super Admin Workspace",
+      workspace_logo: null,
       is_active: true,
       is_deleted: false,
       created_by: "c5dcc910-f10e-473c-a446-f7b7dfd025ca", // Super admin user ID

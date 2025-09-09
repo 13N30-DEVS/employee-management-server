@@ -11,23 +11,12 @@ export interface master_user_statusAttributes {
   updated_at?: Date;
 }
 
-export type master_user_statusPk = 'id';
+export type master_user_statusPk = "id";
 export type master_user_statusId = master_user_status[master_user_statusPk];
-export type master_user_statusOptionalAttributes =
-  | 'name'
-  | 'description'
-  | 'is_active'
-  | 'created_at'
-  | 'updated_at';
-export type master_user_statusCreationAttributes = Optional<
-  master_user_statusAttributes,
-  master_user_statusOptionalAttributes
->;
+export type master_user_statusOptionalAttributes = "name" | "description" | "is_active" | "created_at" | "updated_at";
+export type master_user_statusCreationAttributes = Optional<master_user_statusAttributes, master_user_statusOptionalAttributes>;
 
-export class master_user_status
-  extends Model<master_user_statusAttributes, master_user_statusCreationAttributes>
-  implements master_user_statusAttributes
-{
+export class master_user_status extends Model<master_user_statusAttributes, master_user_statusCreationAttributes> implements master_user_statusAttributes {
   id!: number;
   name?: string;
   description?: string;
@@ -49,48 +38,47 @@ export class master_user_status
   countUsers!: Sequelize.HasManyCountAssociationsMixin;
 
   static initModel(sequelize: Sequelize.Sequelize): typeof master_user_status {
-    return master_user_status.init(
+    return master_user_status.init({
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    description: {
+      type: DataTypes.STRING(255),
+      allowNull: true
+    },
+    is_active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: true
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true
+    }
+  }, {
+    sequelize,
+    tableName: 'master_user_statuses',
+    schema: 'auth',
+    timestamps: false,
+    indexes: [
       {
-        id: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-          primaryKey: true,
-        },
-        name: {
-          type: DataTypes.STRING(255),
-          allowNull: true,
-        },
-        description: {
-          type: DataTypes.STRING(255),
-          allowNull: true,
-        },
-        is_active: {
-          type: DataTypes.BOOLEAN,
-          allowNull: true,
-          defaultValue: true,
-        },
-        created_at: {
-          type: DataTypes.DATE,
-          allowNull: true,
-        },
-        updated_at: {
-          type: DataTypes.DATE,
-          allowNull: true,
-        },
+        name: "master_user_statuses_pkey",
+        unique: true,
+        fields: [
+          { name: "id" },
+        ]
       },
-      {
-        sequelize,
-        tableName: 'master_user_statuses',
-        schema: 'auth',
-        timestamps: false,
-        indexes: [
-          {
-            name: 'master_user_statuses_pkey',
-            unique: true,
-            fields: [{ name: 'id' }],
-          },
-        ],
-      }
-    );
+    ]
+  });
   }
 }
