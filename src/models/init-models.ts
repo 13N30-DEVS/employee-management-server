@@ -1,30 +1,60 @@
-import type { Sequelize } from "sequelize";
-import { employee_detail as _employee_detail } from "./employee_detail";
-import type { employee_detailAttributes, employee_detailCreationAttributes } from "./employee_detail";
-import { employee_information as _employee_information } from "./employee_information";
-import type { employee_informationAttributes, employee_informationCreationAttributes } from "./employee_information";
-import { employee_role_mapping as _employee_role_mapping } from "./employee_role_mapping";
-import type { employee_role_mappingAttributes, employee_role_mappingCreationAttributes } from "./employee_role_mapping";
-import { master_department as _master_department } from "./master_department";
-import type { master_departmentAttributes, master_departmentCreationAttributes } from "./master_department";
-import { master_designation as _master_designation } from "./master_designation";
-import type { master_designationAttributes, master_designationCreationAttributes } from "./master_designation";
-import { master_gender as _master_gender } from "./master_gender";
-import type { master_genderAttributes, master_genderCreationAttributes } from "./master_gender";
-import { master_user_role as _master_user_role } from "./master_user_role";
-import type { master_user_roleAttributes, master_user_roleCreationAttributes } from "./master_user_role";
-import { master_user_status as _master_user_status } from "./master_user_status";
-import type { master_user_statusAttributes, master_user_statusCreationAttributes } from "./master_user_status";
-import { user as _user } from "./user";
-import type { userAttributes, userCreationAttributes } from "./user";
-import { workspace_department as _workspace_department } from "./workspace_department";
-import type { workspace_departmentAttributes, workspace_departmentCreationAttributes } from "./workspace_department";
-import { workspace_designation as _workspace_designation } from "./workspace_designation";
-import type { workspace_designationAttributes, workspace_designationCreationAttributes } from "./workspace_designation";
-import { workspace_shift as _workspace_shift } from "./workspace_shift";
-import type { workspace_shiftAttributes, workspace_shiftCreationAttributes } from "./workspace_shift";
-import { workspace as _workspace } from "./workspace";
-import type { workspaceAttributes, workspaceCreationAttributes } from "./workspace";
+import type { Sequelize } from 'sequelize';
+import { employee_detail as _employee_detail } from './employee_detail';
+import type {
+  employee_detailAttributes,
+  employee_detailCreationAttributes,
+} from './employee_detail';
+import { employee_information as _employee_information } from './employee_information';
+import type {
+  employee_informationAttributes,
+  employee_informationCreationAttributes,
+} from './employee_information';
+import { employee_role_mapping as _employee_role_mapping } from './employee_role_mapping';
+import type {
+  employee_role_mappingAttributes,
+  employee_role_mappingCreationAttributes,
+} from './employee_role_mapping';
+import { master_department as _master_department } from './master_department';
+import type {
+  master_departmentAttributes,
+  master_departmentCreationAttributes,
+} from './master_department';
+import { master_designation as _master_designation } from './master_designation';
+import type {
+  master_designationAttributes,
+  master_designationCreationAttributes,
+} from './master_designation';
+import { master_gender as _master_gender } from './master_gender';
+import type { master_genderAttributes, master_genderCreationAttributes } from './master_gender';
+import { master_user_role as _master_user_role } from './master_user_role';
+import type {
+  master_user_roleAttributes,
+  master_user_roleCreationAttributes,
+} from './master_user_role';
+import { master_user_status as _master_user_status } from './master_user_status';
+import type {
+  master_user_statusAttributes,
+  master_user_statusCreationAttributes,
+} from './master_user_status';
+import { user as _user } from './user';
+import type { userAttributes, userCreationAttributes } from './user';
+import { workspace_department as _workspace_department } from './workspace_department';
+import type {
+  workspace_departmentAttributes,
+  workspace_departmentCreationAttributes,
+} from './workspace_department';
+import { workspace_designation as _workspace_designation } from './workspace_designation';
+import type {
+  workspace_designationAttributes,
+  workspace_designationCreationAttributes,
+} from './workspace_designation';
+import { workspace_shift as _workspace_shift } from './workspace_shift';
+import type {
+  workspace_shiftAttributes,
+  workspace_shiftCreationAttributes,
+} from './workspace_shift';
+import { workspace as _workspace } from './workspace';
+import type { workspaceAttributes, workspaceCreationAttributes } from './workspace';
 
 export {
   _employee_detail as employee_detail,
@@ -86,76 +116,133 @@ export function initModels(sequelize: Sequelize) {
   const workspace_shift = _workspace_shift.initModel(sequelize);
   const workspace = _workspace.initModel(sequelize);
 
-  user.belongsTo(master_user_role, { as: "role_master_user_role", foreignKey: "role"});
-  master_user_role.hasMany(user, { as: "users", foreignKey: "role"});
-  user.belongsTo(master_user_status, { as: "status_master_user_status", foreignKey: "status"});
-  master_user_status.hasMany(user, { as: "users", foreignKey: "status"});
-  user.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(user, { as: "users", foreignKey: "created_by"});
-  user.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(user, { as: "updated_by_users", foreignKey: "updated_by"});
-  employee_detail.belongsTo(employee_information, { as: "emp", foreignKey: "emp_id"});
-  employee_information.hasMany(employee_detail, { as: "employee_details", foreignKey: "emp_id"});
-  employee_role_mapping.belongsTo(employee_information, { as: "emp", foreignKey: "emp_id"});
-  employee_information.hasMany(employee_role_mapping, { as: "employee_role_mappings", foreignKey: "emp_id"});
-  workspace_department.belongsTo(master_department, { as: "department", foreignKey: "department_id"});
-  master_department.hasMany(workspace_department, { as: "workspace_departments", foreignKey: "department_id"});
-  workspace_designation.belongsTo(master_designation, { as: "designation", foreignKey: "designation_id"});
-  master_designation.hasMany(workspace_designation, { as: "workspace_designations", foreignKey: "designation_id"});
-  employee_information.belongsTo(master_gender, { as: "gender_master_gender", foreignKey: "gender"});
-  master_gender.hasMany(employee_information, { as: "employee_informations", foreignKey: "gender"});
-  employee_role_mapping.belongsTo(master_user_role, { as: "role", foreignKey: "role_id"});
-  master_user_role.hasMany(employee_role_mapping, { as: "employee_role_mappings", foreignKey: "role_id"});
-  employee_detail.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(employee_detail, { as: "employee_details", foreignKey: "created_by"});
-  employee_detail.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(employee_detail, { as: "deleted_by_employee_details", foreignKey: "deleted_by"});
-  employee_detail.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(employee_detail, { as: "updated_by_employee_details", foreignKey: "updated_by"});
-  employee_information.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(employee_information, { as: "employee_informations", foreignKey: "created_by"});
-  employee_information.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(employee_information, { as: "deleted_by_employee_informations", foreignKey: "deleted_by"});
-  employee_information.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(employee_information, { as: "updated_by_employee_informations", foreignKey: "updated_by"});
-  employee_information.belongsTo(user, { as: "user", foreignKey: "user_id"});
-  user.hasMany(employee_information, { as: "user_employee_informations", foreignKey: "user_id"});
-  employee_role_mapping.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(employee_role_mapping, { as: "employee_role_mappings", foreignKey: "created_by"});
-  employee_role_mapping.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(employee_role_mapping, { as: "deleted_by_employee_role_mappings", foreignKey: "deleted_by"});
-  employee_role_mapping.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(employee_role_mapping, { as: "updated_by_employee_role_mappings", foreignKey: "updated_by"});
-  workspace_department.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(workspace_department, { as: "workspace_departments", foreignKey: "created_by"});
-  workspace_department.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(workspace_department, { as: "deleted_by_workspace_departments", foreignKey: "deleted_by"});
-  workspace_department.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(workspace_department, { as: "updated_by_workspace_departments", foreignKey: "updated_by"});
-  workspace_designation.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(workspace_designation, { as: "workspace_designations", foreignKey: "created_by"});
-  workspace_designation.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(workspace_designation, { as: "deleted_by_workspace_designations", foreignKey: "deleted_by"});
-  workspace_designation.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(workspace_designation, { as: "updated_by_workspace_designations", foreignKey: "updated_by"});
-  workspace_shift.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(workspace_shift, { as: "workspace_shifts", foreignKey: "created_by"});
-  workspace_shift.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(workspace_shift, { as: "deleted_by_workspace_shifts", foreignKey: "deleted_by"});
-  workspace_shift.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(workspace_shift, { as: "updated_by_workspace_shifts", foreignKey: "updated_by"});
-  workspace.belongsTo(user, { as: "created_by_user", foreignKey: "created_by"});
-  user.hasMany(workspace, { as: "workspaces", foreignKey: "created_by"});
-  workspace.belongsTo(user, { as: "deleted_by_user", foreignKey: "deleted_by"});
-  user.hasMany(workspace, { as: "deleted_by_workspaces", foreignKey: "deleted_by"});
-  workspace.belongsTo(user, { as: "updated_by_user", foreignKey: "updated_by"});
-  user.hasMany(workspace, { as: "updated_by_workspaces", foreignKey: "updated_by"});
-  employee_information.belongsTo(workspace, { as: "workspace", foreignKey: "workspace_id"});
-  workspace.hasMany(employee_information, { as: "employee_informations", foreignKey: "workspace_id"});
-  workspace_department.belongsTo(workspace, { as: "workspace", foreignKey: "workspace_id"});
-  workspace.hasMany(workspace_department, { as: "workspace_departments", foreignKey: "workspace_id"});
-  workspace_designation.belongsTo(workspace, { as: "workspace", foreignKey: "workspace_id"});
-  workspace.hasMany(workspace_designation, { as: "workspace_designations", foreignKey: "workspace_id"});
+  user.belongsTo(master_user_role, { as: 'role_master_user_role', foreignKey: 'role' });
+  master_user_role.hasMany(user, { as: 'users', foreignKey: 'role' });
+  user.belongsTo(master_user_status, { as: 'status_master_user_status', foreignKey: 'status' });
+  master_user_status.hasMany(user, { as: 'users', foreignKey: 'status' });
+  user.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(user, { as: 'users', foreignKey: 'created_by' });
+  user.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(user, { as: 'updated_by_users', foreignKey: 'updated_by' });
+  employee_detail.belongsTo(employee_information, { as: 'emp', foreignKey: 'emp_id' });
+  employee_information.hasMany(employee_detail, { as: 'employee_details', foreignKey: 'emp_id' });
+  employee_role_mapping.belongsTo(employee_information, { as: 'emp', foreignKey: 'emp_id' });
+  employee_information.hasMany(employee_role_mapping, {
+    as: 'employee_role_mappings',
+    foreignKey: 'emp_id',
+  });
+  workspace_department.belongsTo(master_department, {
+    as: 'department',
+    foreignKey: 'department_id',
+  });
+  master_department.hasMany(workspace_department, {
+    as: 'workspace_departments',
+    foreignKey: 'department_id',
+  });
+  workspace_designation.belongsTo(master_designation, {
+    as: 'designation',
+    foreignKey: 'designation_id',
+  });
+  master_designation.hasMany(workspace_designation, {
+    as: 'workspace_designations',
+    foreignKey: 'designation_id',
+  });
+  employee_information.belongsTo(master_gender, {
+    as: 'gender_master_gender',
+    foreignKey: 'gender',
+  });
+  master_gender.hasMany(employee_information, {
+    as: 'employee_informations',
+    foreignKey: 'gender',
+  });
+  employee_role_mapping.belongsTo(master_user_role, { as: 'role', foreignKey: 'role_id' });
+  master_user_role.hasMany(employee_role_mapping, {
+    as: 'employee_role_mappings',
+    foreignKey: 'role_id',
+  });
+  employee_detail.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(employee_detail, { as: 'employee_details', foreignKey: 'created_by' });
+  employee_detail.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(employee_detail, { as: 'deleted_by_employee_details', foreignKey: 'deleted_by' });
+  employee_detail.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(employee_detail, { as: 'updated_by_employee_details', foreignKey: 'updated_by' });
+  employee_information.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(employee_information, { as: 'employee_informations', foreignKey: 'created_by' });
+  employee_information.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(employee_information, {
+    as: 'deleted_by_employee_informations',
+    foreignKey: 'deleted_by',
+  });
+  employee_information.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(employee_information, {
+    as: 'updated_by_employee_informations',
+    foreignKey: 'updated_by',
+  });
+  employee_information.belongsTo(user, { as: 'user', foreignKey: 'user_id' });
+  user.hasMany(employee_information, { as: 'user_employee_informations', foreignKey: 'user_id' });
+  employee_role_mapping.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(employee_role_mapping, { as: 'employee_role_mappings', foreignKey: 'created_by' });
+  employee_role_mapping.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(employee_role_mapping, {
+    as: 'deleted_by_employee_role_mappings',
+    foreignKey: 'deleted_by',
+  });
+  employee_role_mapping.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(employee_role_mapping, {
+    as: 'updated_by_employee_role_mappings',
+    foreignKey: 'updated_by',
+  });
+  workspace_department.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(workspace_department, { as: 'workspace_departments', foreignKey: 'created_by' });
+  workspace_department.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(workspace_department, {
+    as: 'deleted_by_workspace_departments',
+    foreignKey: 'deleted_by',
+  });
+  workspace_department.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(workspace_department, {
+    as: 'updated_by_workspace_departments',
+    foreignKey: 'updated_by',
+  });
+  workspace_designation.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(workspace_designation, { as: 'workspace_designations', foreignKey: 'created_by' });
+  workspace_designation.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(workspace_designation, {
+    as: 'deleted_by_workspace_designations',
+    foreignKey: 'deleted_by',
+  });
+  workspace_designation.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(workspace_designation, {
+    as: 'updated_by_workspace_designations',
+    foreignKey: 'updated_by',
+  });
+  workspace_shift.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(workspace_shift, { as: 'workspace_shifts', foreignKey: 'created_by' });
+  workspace_shift.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(workspace_shift, { as: 'deleted_by_workspace_shifts', foreignKey: 'deleted_by' });
+  workspace_shift.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(workspace_shift, { as: 'updated_by_workspace_shifts', foreignKey: 'updated_by' });
+  workspace.belongsTo(user, { as: 'created_by_user', foreignKey: 'created_by' });
+  user.hasMany(workspace, { as: 'workspaces', foreignKey: 'created_by' });
+  workspace.belongsTo(user, { as: 'deleted_by_user', foreignKey: 'deleted_by' });
+  user.hasMany(workspace, { as: 'deleted_by_workspaces', foreignKey: 'deleted_by' });
+  workspace.belongsTo(user, { as: 'updated_by_user', foreignKey: 'updated_by' });
+  user.hasMany(workspace, { as: 'updated_by_workspaces', foreignKey: 'updated_by' });
+  employee_information.belongsTo(workspace, { as: 'workspace', foreignKey: 'workspace_id' });
+  workspace.hasMany(employee_information, {
+    as: 'employee_informations',
+    foreignKey: 'workspace_id',
+  });
+  workspace_department.belongsTo(workspace, { as: 'workspace', foreignKey: 'workspace_id' });
+  workspace.hasMany(workspace_department, {
+    as: 'workspace_departments',
+    foreignKey: 'workspace_id',
+  });
+  workspace_designation.belongsTo(workspace, { as: 'workspace', foreignKey: 'workspace_id' });
+  workspace.hasMany(workspace_designation, {
+    as: 'workspace_designations',
+    foreignKey: 'workspace_id',
+  });
 
   return {
     employee_detail: employee_detail,
